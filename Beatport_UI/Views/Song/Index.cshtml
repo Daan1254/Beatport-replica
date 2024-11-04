@@ -1,6 +1,45 @@
-
+@model IEnumerable<SongModel>
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<h2>You're songs</h2>
+
+<table class="table container mx-auto mt-10">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bpm)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bpm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genre)
+            </td>
+            
+            
+            @* <td> *@
+            @*     <a asp-route-id="@item.name">Edit</a> | *@
+            @*     <a asp-route-id="@item.name">Details</a> | *@
+            @*     <a asp-route-id="@item.name">Delete</a> *@
+            @* </td> *@
+        </tr>
+}
+    </tbody>
+</table>
