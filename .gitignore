@@ -5,3 +5,6 @@
 /Beatport_UI/wwwroot
 /Beatport_UI/.env
 .DS_Store
+/Beatport_BLL/bin
+/Beatport_BLL/obj
+/Beatport_DAL/obj
