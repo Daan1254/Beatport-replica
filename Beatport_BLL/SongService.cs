@@ -1,7 +1,7 @@
-using Beatport_BBL.Interfaces;
+using Beatport_BLL.Interfaces;
 using Beatport_UI.Models;
 
-namespace Beatport_BBL;
+namespace Beatport_BLL;
 
 public class SongService
 {

@@ -1,4 +1,4 @@
-﻿using Beatport_BBL.Interfaces;
+﻿using Beatport_BLL.Interfaces;
 using Beatport_UI.Models;
 using dotenv.net;
 using MySql.Data.MySqlClient;

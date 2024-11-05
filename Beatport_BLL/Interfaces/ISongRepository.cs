@@ -1,6 +1,6 @@
 using Beatport_UI.Models;
 
-namespace Beatport_BBL.Interfaces;
+namespace Beatport_BLL.Interfaces;
 
 public interface ISongRepository
 {
