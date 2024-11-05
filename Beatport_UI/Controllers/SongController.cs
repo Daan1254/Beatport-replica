@@ -1,22 +1,15 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using Beatport_UI.Models;
 using dotenv.net;
+using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 
 namespace Beatport_UI.Controllers;
 
-public class HomeController : Controller
+public class SongController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
+    
     private readonly string connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
+    // GET
     public IActionResult Index()
     {
         List<SongModel> songs = new List<SongModel>();
@@ -43,15 +36,15 @@ public class HomeController : Controller
     }
     
     
-
-    public IActionResult Privacy()
+    public IActionResult Create()
     {
         return View();
     }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    
+    [HttpPost] 
+    public ActionResult CreateSong(SongModel sm)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+ 
+        return View("Index");
     }
 }
