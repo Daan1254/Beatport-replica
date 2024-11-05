@@ -1,9 +1,14 @@
+using Beatport_BLL;
+using Beatport_BLL.Interfaces;
+using Beatport_DAL;
 using dotenv.net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<SongService>();
+builder.Services.AddScoped<ISongRepository, SongRepository>();
 
 DotEnv.Load();
 
@@ -19,6 +24,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+
 
 app.UseRouting();
 

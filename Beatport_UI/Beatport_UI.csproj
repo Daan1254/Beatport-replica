@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Beatport_BLL\Beatport_BLL.csproj" />
+      <ProjectReference Include="..\Beatport_DAL\Beatport_DAL.csproj" />
     </ItemGroup>
 
 </Project>
