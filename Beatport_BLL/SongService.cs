@@ -1,5 +1,6 @@
 using Beatport_BLL.Interfaces;
 using Beatport_UI.Models;
+using Beatport_UI.Models.Dtos;
 
 namespace Beatport_BLL;
 
@@ -12,7 +13,7 @@ public class SongService
         _songRepository = songRepository;
     }
 
-    public List<SongModel> GetAllSongs()
+    public List<SongDto> GetAllSongs()
     {
         return _songRepository.GetAllSongs();
     }

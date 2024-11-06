@@ -1,5 +1,6 @@
 using Beatport_BLL;
 using Beatport_UI.Models;
+using Beatport_UI.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beatport_UI.Controllers;
@@ -17,9 +18,17 @@ public class SongController : Controller
     // GET
     public IActionResult Index()
     {
-        List<SongModel> songs = _songService.GetAllSongs();
+        List<SongDto> songDtos = _songService.GetAllSongs();
         
-        return View(songs);
+         List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+        {
+            Id = dto.Id,
+            Title = dto.Title,
+            Genre = dto.Genre,
+            Bpm = dto.Bpm,
+        }).ToList();
+        
+        return View(songViewModels);
     }
     
     
@@ -29,7 +38,7 @@ public class SongController : Controller
     }
     
     [HttpPost] 
-    public ActionResult CreateSong(SongModel sm)
+    public ActionResult CreateSong(SongViewModel sm)
     {
  
         return View("Index");

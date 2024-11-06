@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Beatport_BLL;
 using Microsoft.AspNetCore.Mvc;
 using Beatport_UI.Models;
+using Beatport_UI.Models.Dtos;
 
 namespace Beatport_UI.Controllers;
 
@@ -16,9 +17,17 @@ public class HomeController : Controller
     
     public ActionResult Index()
     {
-       List<SongModel> songs = _songService.GetAllSongs();
+       List<SongDto> songDtos = _songService.GetAllSongs();
        
-        return View(songs);
+       List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+       {
+           Id = dto.Id,
+           Title = dto.Title,
+           Genre = dto.Genre,
+           Bpm = dto.Bpm,
+       }).ToList();
+       
+        return View(songViewModels);
     }
     
     

@@ -1,5 +1,6 @@
 ﻿using Beatport_BLL.Interfaces;
 using Beatport_UI.Models;
+using Beatport_UI.Models.Dtos;
 using dotenv.net;
 using MySql.Data.MySqlClient;
 
@@ -14,9 +15,9 @@ public class SongRepository : ISongRepository
         connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
     }
     
-    public List<SongModel> GetAllSongs()
+    public List<SongDto> GetAllSongs()
     {
-        List<SongModel> songs = new List<SongModel>();
+        List<SongDto> songs = new List<SongDto>();
         using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
         {
             MySqlCommand cmd = new MySqlCommand("SELECT * FROM songs", mySqlConnection);
@@ -27,12 +28,15 @@ public class SongRepository : ISongRepository
             
             while (reader.Read())
             {
-                songs.Add(new SongModel
+                songs.Add(new SongDto
                 {
                     Id = reader.GetInt32("id"),
                     Title = reader.GetString("title"),
                     Genre = reader.GetString("genre"),
-                    Bpm = reader.GetInt32("bpm")
+                    Bpm = reader.GetInt32("bpm"),
+                    CreatedAt = reader.GetDateTime("CreatedAt"),
+                    UpdatedAt = reader.IsDBNull(reader.GetOrdinal("UpdatedAt")) ? (DateTime?)null : reader.GetDateTime("UpdatedAt"),
+                    DeletedAt = reader.IsDBNull(reader.GetOrdinal("DeletedAt")) ? (DateTime?)null : reader.GetDateTime("DeletedAt"),
                 });
             }
         }
