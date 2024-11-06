@@ -1,6 +1,5 @@
 ﻿using Beatport_BLL.Interfaces;
-using Beatport_UI.Models;
-using Beatport_UI.Models.Dtos;
+using Beatport_BLL.Models.Dtos;
 using dotenv.net;
 using MySql.Data.MySqlClient;
 
@@ -39,7 +38,29 @@ public class SongRepository : ISongRepository
                     DeletedAt = reader.IsDBNull(reader.GetOrdinal("DeletedAt")) ? (DateTime?)null : reader.GetDateTime("DeletedAt"),
                 });
             }
+            
+            mySqlConnection.Close();
         }
         return songs;
+    }
+
+    public SongDto CreateSong(CreateEditSongDto createEditSongDto)
+    {
+        using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
+        {
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO songs (title, genre, bpm) VALUES (@title, @genre, @bpm)",
+                mySqlConnection);
+            cmd.Parameters.AddWithValue("@title", createEditSongDto.Title);
+            cmd.Parameters.AddWithValue("@genre", createEditSongDto.Genre);
+            cmd.Parameters.AddWithValue("@bpm", createEditSongDto.Bpm);
+
+            mySqlConnection.Open();
+
+            cmd.ExecuteNonQuery();
+
+            mySqlConnection.Close();
+        }
+
+        return new SongDto();
     }
 }

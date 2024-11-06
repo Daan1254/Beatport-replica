@@ -1,6 +1,6 @@
 using Beatport_BLL;
+using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
-using Beatport_UI.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beatport_UI.Controllers;
@@ -41,12 +41,28 @@ public class SongController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Create(SongViewModel songViewModel)
     {
-
-        if (ModelState.IsValid)
+        try
         {
+            if (!ModelState.IsValid)
+            {
+                return View(songViewModel);
+            }
+        
+            CreateEditSongDto createEditSongDto = new CreateEditSongDto
+            {
+                Title = songViewModel.Title,
+                Genre = songViewModel.Genre,
+                Bpm = songViewModel.Bpm
+            };
+            
+            _songService.CreateSong(createEditSongDto);
+            
             return RedirectToAction("Index", "Home");
-        }
 
-        return View(songViewModel);
+        } catch (Exception e)
+        {
+            ViewData["Error"] = "An error occurred";
+            return View();
+        }
     }
 }

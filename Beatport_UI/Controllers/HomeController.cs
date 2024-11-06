@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Beatport_BLL;
+using Beatport_BLL.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Beatport_UI.Models;
-using Beatport_UI.Models.Dtos;
 
 namespace Beatport_UI.Controllers;
 
@@ -17,17 +17,25 @@ public class HomeController : Controller
     
     public ActionResult Index()
     {
-       List<SongDto> songDtos = _songService.GetAllSongs();
+        try
+        {
+            List<SongDto> songDtos = _songService.GetAllSongs();
        
-       List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
-       {
-           Id = dto.Id,
-           Title = dto.Title,
-           Genre = dto.Genre,
-           Bpm = dto.Bpm,
-       }).ToList();
+            List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Genre = dto.Genre,
+                Bpm = dto.Bpm,
+            }).ToList();
        
-        return View(songViewModels);
+            return View(songViewModels);
+        } catch (Exception e)
+        {
+            ViewData["Error"] = "An error occurred";
+            return View();
+        }
+       
     }
     
     

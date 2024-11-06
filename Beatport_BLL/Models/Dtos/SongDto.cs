@@ -1,5 +1,5 @@
 
-namespace Beatport_UI.Models.Dtos;
+namespace Beatport_BLL.Models.Dtos;
 
 public class SongDto
 {
