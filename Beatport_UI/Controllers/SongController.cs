@@ -38,9 +38,15 @@ public class SongController : Controller
     }
     
     [HttpPost] 
-    public ActionResult CreateSong(SongViewModel sm)
+    [ValidateAntiForgeryToken]
+    public ActionResult Create(SongViewModel songViewModel)
     {
- 
-        return View("Index");
+
+        if (ModelState.IsValid)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View(songViewModel);
     }
 }
