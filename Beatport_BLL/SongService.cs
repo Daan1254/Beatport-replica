@@ -1,3 +1,4 @@
+using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 
@@ -16,9 +17,33 @@ public class SongService
     {
         return _songRepository.GetAllSongs();
     }
+    
+    public SongDto GetSong(int id)
+    {
+        SongDto? song = _songRepository.GetSong(id);
+
+        if (song == null)
+        {
+            throw new SongNotFoundException(id);
+        }
+        
+        return song;
+    }
 
     public SongDto CreateSong(CreateEditSongDto createEditSongDto)
     {
         return _songRepository.CreateSong(createEditSongDto);
+    }
+
+    public SongDto EditSong(int id, CreateEditSongDto createEditSongDto)
+    {
+        SongDto? song = _songRepository.GetSong(id);
+
+        if (song == null)
+        {
+            throw new SongNotFoundException(id);
+        }
+        
+        return _songRepository.EditSong(id, createEditSongDto);
     }
 }
