@@ -1,45 +1,41 @@
 using System.Diagnostics;
+using Beatport_BLL;
+using Beatport_BLL.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Beatport_UI.Models;
-using dotenv.net;
-using MySql.Data.MySqlClient;
 
 namespace Beatport_UI.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly SongService _songService;
 
-    private readonly string connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
-
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(SongService songService)
     {
-        _logger = logger;
+        _songService = songService;
     }
-
-    public IActionResult Index()
+    
+    public ActionResult Index()
     {
-        List<SongModel> songs = new List<SongModel>();
-        using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
+        try
         {
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM songs", mySqlConnection);
-            
-            mySqlConnection.Open();
-            
-            MySqlDataReader reader = cmd.ExecuteReader();
-            
-            while (reader.Read())
+            List<SongDto> songDtos = _songService.GetAllSongs();
+       
+            List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
             {
-                songs.Add(new SongModel
-                {
-                    Id = reader.GetInt32("id"),
-                    Title = reader.GetString("title"),
-                    Genre = reader.GetString("genre"),
-                    Bpm = reader.GetInt32("bpm")
-                });
-            }
+                Id = dto.Id,
+                Title = dto.Title,
+                Genre = dto.Genre,
+                Bpm = dto.Bpm,
+            }).ToList();
+       
+            return View(songViewModels);
+        } catch (Exception e)
+        {
+            ViewData["Error"] = "An error occurred";
+            return View();
         }
-        return View(songs);
+       
     }
     
     

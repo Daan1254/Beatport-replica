@@ -8,7 +8,11 @@
 
     <ItemGroup>
       <PackageReference Include="dotenv.net" Version="3.2.1" />
-      <PackageReference Include="MySql.Data" Version="9.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Beatport_BLL\Beatport_BLL.csproj" />
+      <ProjectReference Include="..\Beatport_DAL\Beatport_DAL.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,7 @@
-namespace Beatport_UI.Models;
+namespace Beatport_BLL.Models.Dtos;
 
-public class SongModel
+public class CreateEditSongDto
 {
-    public int Id { get; set; }
     public string Title { get; set; }
     public string Genre { get; set; }
     public int Bpm { get; set; }
