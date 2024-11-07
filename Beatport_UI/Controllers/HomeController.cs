@@ -28,8 +28,14 @@ public class HomeController : Controller
                 Genre = dto.Genre,
                 Bpm = dto.Bpm,
             }).ToList();
+            
+            HomeViewModel homeViewModel = new HomeViewModel
+            {
+                FeaturedSong = songViewModels.Select(s => s).FirstOrDefault() ?? new SongViewModel(),
+                Songs = songViewModels.Where(s => s.Id != songViewModels.Select(s => s).FirstOrDefault().Id).ToList()
+            };
        
-            return View(songViewModels);
+            return View(homeViewModel);
         } catch (Exception e)
         {
             ViewData["Error"] = "An error occurred";
