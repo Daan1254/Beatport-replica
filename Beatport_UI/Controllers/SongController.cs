@@ -120,7 +120,7 @@ public class SongController : Controller
         {
             return NotFound();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             ViewData["Error"] = "An error occurred";
             return View();
