@@ -7,6 +7,7 @@ public interface ISongRepository
 {
     public List<SongDto> GetAllSongs();
     public SongDto? GetSong(int id);
-    public SongDto CreateSong(CreateEditSongDto createEditSongDto);
-    public SongDto EditSong(int id, CreateEditSongDto createEditSongDto);
+    public bool CreateSong(CreateEditSongDto createEditSongDto);
+    public bool EditSong(int id, CreateEditSongDto createEditSongDto);
+    public bool DeleteSong(int id);
 }

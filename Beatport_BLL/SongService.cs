@@ -30,12 +30,12 @@ public class SongService
         return song;
     }
 
-    public SongDto CreateSong(CreateEditSongDto createEditSongDto)
+    public bool CreateSong(CreateEditSongDto createEditSongDto)
     {
         return _songRepository.CreateSong(createEditSongDto);
     }
 
-    public SongDto EditSong(int id, CreateEditSongDto createEditSongDto)
+    public bool EditSong(int id, CreateEditSongDto createEditSongDto)
     {
         SongDto? song = _songRepository.GetSong(id);
 
@@ -45,5 +45,17 @@ public class SongService
         }
         
         return _songRepository.EditSong(id, createEditSongDto);
+    }
+    
+    public bool DeleteSong(int id)
+    {
+        SongDto? song = _songRepository.GetSong(id);
+
+        if (song == null)
+        {
+            throw new SongNotFoundException(id);
+        }
+        
+        return _songRepository.DeleteSong(id);
     }
 }

@@ -75,7 +75,7 @@ public class SongRepository : ISongRepository
         return song;
     }
 
-    public SongDto CreateSong(CreateEditSongDto createEditSongDto)
+    public bool CreateSong(CreateEditSongDto createEditSongDto)
     {
         using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
         {
@@ -87,16 +87,12 @@ public class SongRepository : ISongRepository
 
             mySqlConnection.Open();
 
-            cmd.ExecuteNonQuery();
-
-            mySqlConnection.Close();
+            return cmd.ExecuteNonQuery() > 0;
         }
-
-        return new SongDto();
     }
     
     
-    public SongDto EditSong(int id, CreateEditSongDto createEditSongDto)
+    public bool EditSong(int id, CreateEditSongDto createEditSongDto)
     {
         using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
         {
@@ -109,13 +105,20 @@ public class SongRepository : ISongRepository
 
             mySqlConnection.Open();
 
-            cmd.ExecuteNonQuery();
-
-            mySqlConnection.Close();
+            return cmd.ExecuteNonQuery() > 0;
         }
-
-        return new SongDto();
     }
 
-   
+    public bool DeleteSong(int id)
+    {
+        using (MySqlConnection mySqlConnection = new MySqlConnection(connectionStr))
+        {
+            MySqlCommand cmd = new MySqlCommand("DELETE FROM songs WHERE id = @id", mySqlConnection);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            mySqlConnection.Open();
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+    }
 }

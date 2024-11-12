@@ -94,7 +94,7 @@ public class SongController : Controller
         }
     }
     
-    [HttpPut] 
+    [HttpPost] 
     [ValidateAntiForgeryToken]
     public ActionResult Edit(SongViewModel songViewModel)
     {
@@ -102,7 +102,7 @@ public class SongController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return View(songViewModel);
+                return View("Index");
             }
         
             CreateEditSongDto createEditSongDto = new CreateEditSongDto
@@ -114,7 +114,7 @@ public class SongController : Controller
             
             _songService.EditSong(songViewModel.Id, createEditSongDto);
             
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index");
 
         } catch(SongNotFoundException ex)
         {
@@ -124,6 +124,51 @@ public class SongController : Controller
         {
             ViewData["Error"] = "An error occurred";
             return View();
+        }
+    }
+    
+    public IActionResult Delete(int Id)
+    {
+        try
+        {
+            SongDto songDto = _songService.GetSong(Id);
+            
+            DeleteSongViewModel songViewModel = new DeleteSongViewModel()
+            {
+                Id = songDto.Id,
+                Title = songDto.Title,
+            };
+        
+            return View(songViewModel);
+        }
+        catch (SongNotFoundException ex)
+        {
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            ViewData["Error"] = "An unknown error occurred";
+            return View();
+        }
+    }
+    
+    
+    [HttpPost]
+    public ActionResult DeleteSong(int Id)
+    {
+        try
+        {
+            _songService.DeleteSong(Id);
+            return RedirectToAction("Index");
+        }
+        catch (SongNotFoundException ex)
+        {
+            return NotFound();
+        }
+        catch (Exception e)
+        {
+            ViewData["Error"] = "An error occurred";
+            return RedirectToAction("Index");
         }
     }
 }
