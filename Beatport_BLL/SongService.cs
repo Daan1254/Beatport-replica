@@ -4,7 +4,7 @@ using Beatport_BLL.Models.Dtos;
 
 namespace Beatport_BLL;
 
-public class SongService
+public class SongService : ISongService
 {
     private readonly ISongRepository _songRepository;
 

@@ -1,5 +1,6 @@
 using Beatport_BLL;
 using Beatport_BLL.Exceptions;
+using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,9 @@ namespace Beatport_UI.Controllers;
 public class SongController : Controller
 {
     
-    private readonly SongService _songService;
+    private readonly ISongService _songService;
     
-    public SongController(SongService songService)
+    public SongController(ISongService songService)
     {
         _songService = songService;
     }
