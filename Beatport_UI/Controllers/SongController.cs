@@ -126,7 +126,7 @@ public class SongController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return View("Index");
+                return View(songViewModel);
             }
         
             CreateEditSongDto createEditSongDto = new CreateEditSongDto
