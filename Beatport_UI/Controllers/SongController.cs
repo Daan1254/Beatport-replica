@@ -19,17 +19,30 @@ public class SongController : Controller
     // GET
     public IActionResult Index()
     {
-        List<SongDto> songDtos = _songService.GetAllSongs();
-        
-         List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+        try
         {
-            Id = dto.Id,
-            Title = dto.Title,
-            Genre = dto.Genre,
-            Bpm = dto.Bpm,
-        }).ToList();
+            List<SongDto> songDtos = _songService.GetAllSongs();
         
-        return View(songViewModels);
+            List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Genre = dto.Genre,
+                Bpm = dto.Bpm,
+            }).ToList();
+        
+            return View(songViewModels);
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
+        catch (Exception ex)
+        {
+            ViewData["Error"] = "An error occurred";
+            return View();
+        }
     }
     
     
@@ -60,7 +73,13 @@ public class SongController : Controller
             
             return RedirectToAction("Index", "Home");
 
-        } catch (Exception e)
+        } 
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
+        catch (Exception e)
         {
             ViewData["Error"] = "An error occurred";
             return View();
@@ -86,6 +105,11 @@ public class SongController : Controller
         catch (SongNotFoundException ex)
         {
             return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
         }
         catch (Exception e)
         {
@@ -120,6 +144,11 @@ public class SongController : Controller
         {
             return NotFound();
         }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
         catch (Exception ex)
         {
             ViewData["Error"] = "An error occurred";
@@ -144,6 +173,11 @@ public class SongController : Controller
         catch (SongNotFoundException ex)
         {
             return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
         }
         catch (Exception e)
         {

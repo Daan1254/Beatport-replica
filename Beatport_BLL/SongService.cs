@@ -15,47 +15,87 @@ public class SongService
 
     public List<SongDto> GetAllSongs()
     {
-        return _songRepository.GetAllSongs();
+        try
+        {
+            return _songRepository.GetAllSongs();
+        }
+        catch (Exception ex)
+        {
+            throw new BadRequestException("An error occurred while fetching songs.", ex);
+        }
     }
     
     public SongDto GetSong(int id)
     {
-        SongDto? song = _songRepository.GetSong(id);
-
-        if (song == null)
+        try
         {
-            throw new SongNotFoundException(id);
+            SongDto? song = _songRepository.GetSong(id);
+
+            if (song == null)
+            {
+                throw new SongNotFoundException(id);
+            }
+        
+            return song;
+        }
+        catch (Exception ex)
+        {
+            throw new BadRequestException("An error occurred while fetching song.", ex);
         }
         
-        return song;
     }
 
     public bool CreateSong(CreateEditSongDto createEditSongDto)
     {
-        return _songRepository.CreateSong(createEditSongDto);
+        try
+        {
+            return _songRepository.CreateSong(createEditSongDto);
+
+        }
+        catch (Exception ex)
+        {
+            throw new BadRequestException("An error occurred while creating song.", ex);
+        }
     }
 
     public bool EditSong(int id, CreateEditSongDto createEditSongDto)
     {
-        SongDto? song = _songRepository.GetSong(id);
-
-        if (song == null)
+        try
         {
-            throw new SongNotFoundException(id);
-        }
+            SongDto? song = _songRepository.GetSong(id);
+
+            if (song == null)
+            {
+                throw new SongNotFoundException(id);
+            }
         
-        return _songRepository.EditSong(id, createEditSongDto);
+            return _songRepository.EditSong(id, createEditSongDto);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while editing song.", ex);
+        }
     }
     
     public bool DeleteSong(int id)
     {
-        SongDto? song = _songRepository.GetSong(id);
-
-        if (song == null)
+        try
         {
-            throw new SongNotFoundException(id);
+            SongDto? song = _songRepository.GetSong(id);
+
+            if (song == null)
+            {
+                throw new SongNotFoundException(id);
+            }
+        
+            // TODO: Add Soft Delete and check if author is the same
+        
+            return _songRepository.DeleteSong(id);
+        }
+        catch (Exception ex)
+        {
+            throw new BadRequestException("An error occurred while deleting song.", ex);
         }
         
-        return _songRepository.DeleteSong(id);
     }
 }
