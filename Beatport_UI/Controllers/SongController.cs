@@ -1,5 +1,6 @@
 using Beatport_BLL;
 using Beatport_BLL.Exceptions;
+using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,9 @@ namespace Beatport_UI.Controllers;
 public class SongController : Controller
 {
     
-    private readonly SongService _songService;
+    private readonly ISongService _songService;
     
-    public SongController(SongService songService)
+    public SongController(ISongService songService)
     {
         _songService = songService;
     }
@@ -19,17 +20,30 @@ public class SongController : Controller
     // GET
     public IActionResult Index()
     {
-        List<SongDto> songDtos = _songService.GetAllSongs();
-        
-         List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+        try
         {
-            Id = dto.Id,
-            Title = dto.Title,
-            Genre = dto.Genre,
-            Bpm = dto.Bpm,
-        }).ToList();
+            List<SongDto> songDtos = _songService.GetAllSongs();
         
-        return View(songViewModels);
+            List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Genre = dto.Genre,
+                Bpm = dto.Bpm,
+            }).ToList();
+        
+            return View(songViewModels);
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
+        catch (Exception ex)
+        {
+            ViewData["Error"] = "An error occurred";
+            return View();
+        }
     }
     
     
@@ -60,7 +74,13 @@ public class SongController : Controller
             
             return RedirectToAction("Index", "Home");
 
-        } catch (Exception e)
+        } 
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
+        catch (Exception e)
         {
             ViewData["Error"] = "An error occurred";
             return View();
@@ -87,6 +107,11 @@ public class SongController : Controller
         {
             return NotFound();
         }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
+        }
         catch (Exception e)
         {
             ViewData["Error"] = "An unknown error occurred";
@@ -102,7 +127,7 @@ public class SongController : Controller
         {
             if (!ModelState.IsValid)
             {
-                return View("Index");
+                return View(songViewModel);
             }
         
             CreateEditSongDto createEditSongDto = new CreateEditSongDto
@@ -119,6 +144,11 @@ public class SongController : Controller
         } catch(SongNotFoundException ex)
         {
             return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
         }
         catch (Exception ex)
         {
@@ -144,6 +174,11 @@ public class SongController : Controller
         catch (SongNotFoundException ex)
         {
             return NotFound();
+        }
+        catch (BadRequestException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return View();
         }
         catch (Exception e)
         {

@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Beatport_BLL;
+using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Beatport_UI.Models;
@@ -8,9 +8,9 @@ namespace Beatport_UI.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly SongService _songService;
+    private readonly ISongService _songService;
 
-    public HomeController(SongService songService)
+    public HomeController(ISongService songService)
     {
         _songService = songService;
     }
