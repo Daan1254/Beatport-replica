@@ -10,7 +10,7 @@
         {
             <span asp-validation-for="Bpm" class="text-danger">@ViewData["Error"]</span>
         }
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <h1 class="text-2xl font-bold text-white">Upload</h1>
             <div class="mt-10  flex flex-col gap-2">
@@ -21,7 +21,7 @@
                     <div class="mt-2">
                         <div class="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 sm:max-w-md">
                             <input type="text" asp-for="Title" placeholder="Feel Alive" 
-                                   class="block flex-1 border-0 bg-[#1B1C1E] rounded-md text-gray-900 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
+                                   class="block flex-1 border-0 bg-[#1B1C1E] rounded-md text-white/80 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                     <div class="mt-2">
                         <div class="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 sm:max-w-md">
                             <input type="text" asp-for="Genre" placeholder="Rawstyle" 
-                                   class="block flex-1 border-0 bg-[#1B1C1E]  rounded-md text-gray-900 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
+                                   class="block flex-1 border-0 bg-[#1B1C1E]  rounded-md text-white/80 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
                         </div>
                     </div>
                 </div>
@@ -43,24 +43,27 @@
                     <div class="mt-2">
                         <div class="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600 sm:max-w-md">
                             <input type="number" asp-for="Bpm" placeholder="160" 
-                                   class="block flex-1 border-0 bg-[#1B1C1E] rounded-md text-gray-900 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
+                                   class="block flex-1 border-0 bg-[#1B1C1E] rounded-md text-white/80 placeholder-gray-500 py-1.5 pl-1 focus:ring-0 sm:text-sm">
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="col-span-full ">
                     <label  class="block text-sm/6 font-medium text-white/80">File</label>
                     <div class="mt-2 flex justify-center rounded-lg border border-white/80 border !border-dashed px-6 py-10">
                         <div class="text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 32 32" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" fill="#d1d5db" stroke="#d1d5db"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Icon"> <path d="M18.003,23.922l-0.001,0c-1.105,0 -2.002,0.897 -2.002,2.002c-0,1.105 0.897,2.002 2.002,2.002c1.104,-0 2.001,-0.897 2.001,-2.002l0,-7.122c0,-0 6.001,-0.75 6.001,-0.75l0.003,3.867c-1.105,-0 -2.002,0.897 -2.002,2.002c0,1.104 0.897,2.001 2.002,2.001c1.105,0 2.002,-0.897 2.002,-2.001l-0.006,-7.003c0,-0.286 -0.123,-0.559 -0.338,-0.749c-0.215,-0.19 -0.501,-0.278 -0.786,-0.242l-8,1c-0.5,0.062 -0.876,0.488 -0.876,0.992l0,6.003Z"></path> <path d="M18.003,23.922l-0.001,0c-1.105,0 -2.002,0.897 -2.002,2.002c-0,1.105 0.897,2.002 2.002,2.002c1.104,-0 2.001,-0.897 2.001,-2.002l0,-7.122c0,-0 6.001,-0.75 6.001,-0.75l0.003,3.867c-1.105,-0 -2.002,0.897 -2.002,2.002c0,1.104 0.897,2.001 2.002,2.001c1.105,0 2.002,-0.897 2.002,-2.001l-0.006,-7.003c0,-0.286 -0.123,-0.559 -0.338,-0.749c-0.215,-0.19 -0.501,-0.278 -0.786,-0.242l-8,1c-0.5,0.062 -0.876,0.488 -0.876,0.992l0,6.003Z"></path> <path d="M27,12.994l0.009,-6.035c-0,-0.53 -0.211,-1.039 -0.586,-1.414c-0.375,-0.375 -0.884,-0.586 -1.414,-0.586c-4.185,0 -13.824,0 -18.009,0c-0.53,0 -1.039,0.211 -1.414,0.586c-0.375,0.375 -0.586,0.884 -0.586,1.414c0,4.184 0,13.817 0,18c-0,0.531 0.211,1.04 0.586,1.415c0.375,0.375 0.884,0.585 1.414,0.585l6,0.039" style="fill:none;stroke:#000000#d1d5db;stroke-width:2px;"></path> <path d="M9.004,10l13.983,0c0.552,0 1,-0.448 1,-1c0,-0.552 -0.448,-1 -1,-1l-13.983,0c-0.552,0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,13.994l13.983,0c0.552,0 1,-0.448 1,-1c0,-0.552 -0.448,-1 -1,-1l-13.983,0c-0.552,0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,18l5.981,0c0.552,-0 1,-0.448 1,-1c-0,-0.552 -0.448,-1 -1,-1l-5.981,0c-0.552,-0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,22.006l5.981,-0c0.552,-0 1,-0.448 1,-1c-0,-0.552 -0.448,-1 -1,-1l-5.981,-0c-0.552,-0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> </g> </g></svg>
+                            <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 32 32" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" fill="#d1d5db" stroke="#d1d5db"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Icon"> <path d="M18.003,23.922l-0.001,0c-1.105,0 -2.002,0.897 -2.002,2.002c-0,1.105 0.897,2.002 2.002,2.002c1.104,-0 2.001,-0.897 2.001,-2.002l0,-7.122c0,-0 6.001,-0.75 6.001,-0.75l0.003,3.867c-1.105,-0 -2.002,0.897 -2.002,2.002c0,1.104 0.897,2.001 2.002,2.001c1.105,0 2.002,-0.897 2.002,-2.001l-0.006,-7.003c0,-0.286 -0.123,-0.559 -0.338,-0.749c-0.215,-0.19 -0.501,-0.278 -0.786,-0.242l-8,1c-0.5,0.062 -0.876,0.488 -0.876,0.992l0,6.003Z"></path> <path d="M18.003,23.922l-0.001,0c-1.105,0 -2.002,0.897 -2.002,2.002c-0,1.105 0.897,2.002 2.002,2.002c1.104,-0 2.001,-0.897 2.001,-2.002l0,-7.122c0,-0 6.001,-0.75 6.001,-0.75l0.003,3.867c-1.105,-0 -2.002,0.897 -2.002,2.002c0,1.104 0.897,2.001 2.002,2.001c1.105,0 2.002,-0.897 2.002,-2.001l-0.006,-7.003c0,-0.286 -0.123,-0.559 -0.338,-0.749c-0.215,-0.19 -0.501,-0.278 -0.786,-0.242l-8,1c-0.5,0.062 -0.876,0.488 -0.876,0.992l0,6.003Z"></path> <path d="M27,12.994l0.009,-6.035c-0,-0.53 -0.211,-1.039 -0.586,-1.414c-0.375,-0.375 -0.884,-0.586 -1.414,-0.586c-4.185,0 -13.824,0 -18.009,0c-0.53,0 -1.039,0.211 -1.414,0.586c-0.375,0.375 -0.586,0.884 -0.586,1.414c0,4.184 0,13.817 0,18c-0,0.531 0.211,1.04 0.586,1.415c0.375,0.375 0.884,0.585 1.414,0.585l6,0.039" style="fill:none;stroke:#000000#d1d5db;stroke-width:2px;"></path> <path d="M9.004,10l13.983,0c0.552,0 1,-0.448 1,-1c0,-0.552 -0.448,-1 -1,-1l-13.983,0c-0.552,0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,13.994l13.983,0c0.552,0 1,-0.448 1,-1c0,-0.552 -0.448,-1 -1,-1l-13.983,0c-0.552,0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,18l5.981,0c0.552,-0 1,-0.448 1,-1c-0,-0.552 -0.448,-1 -1,-1l-5.981,0c-0.552,-0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> <path d="M9.004,22.006l5.981,-0c0.552,-0 1,-0.448 1,-1c-0,-0.552 -0.448,-1 -1,-1l-5.981,-0c-0.552,-0 -1,0.448 -1,1c0,0.552 0.448,1 1,1Z"></path> </g> </g></svg>
                             <div class="mt-4 flex text-sm/6 text-white/80">
-                                <label for="file-upload" class="relative cursor-pointer rounded-md  rounded-md font-semibold text-[#FF006A] focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                                <label for="file-upload" class="relative text-center cursor-pointer rounded-md  rounded-md font-semibold text-[#FF006A] focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
                                     <span>Upload your song</span>
-                                    <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                    <input asp-for="File" accept=".mp3, .wav" id="file-upload" type="file" class="sr-only">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
                             <p class="text-xs/5 text-white/70">MP3 or WAV</p>
+                            <p id="fileNameDisplay" class="text-xs/5 text-white/70"></p>
+                            <span asp-validation-for="File" class="text-xs/5 text-danger"></span>
+                            
                         </div>
                     </div>
                 </div>
@@ -70,6 +73,26 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Get references to the file input and the display area
+    const fileInput = document.getElementById('file-upload');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    
+    // Event listener to update the filename display when a file is selected
+    fileInput.addEventListener('change', () => {
+        // Check if there is a file selected
+        if (fileInput.files.length > 0) {
+            // Get the file name
+            const fileName = fileInput.files[0].name;
+            // Display the file name
+            fileNameDisplay.textContent = `Selected file: ${fileName}`;
+        } else {
+            // Clear the display if no file is selected
+            fileNameDisplay.textContent = '';
+        }
+    });
+</script>
 
 
 

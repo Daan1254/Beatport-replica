@@ -1,4 +1,5 @@
 using Beatport_BLL;
+using Beatport_BLL.Dtos.OVH;
 using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
@@ -11,10 +12,12 @@ public class SongController : Controller
 {
     
     private readonly ISongService _songService;
+    private readonly IOVHObjectStorageService _ovhObjectStorageService;
     
-    public SongController(ISongService songService)
+    public SongController(ISongService songService, IOVHObjectStorageService ovhObjectStorageService)
     {
         _songService = songService;
+        _ovhObjectStorageService = ovhObjectStorageService;
     }
     
     // GET
@@ -54,15 +57,27 @@ public class SongController : Controller
     
     [HttpPost] 
     [ValidateAntiForgeryToken]
-    public ActionResult Create(SongViewModel songViewModel)
+    public async Task<ActionResult> Create(SongViewModel songViewModel)
     {
         try
         {
+            Console.WriteLine(songViewModel.File.FileName);
+            Console.WriteLine(songViewModel.File.ContentType);
             if (!ModelState.IsValid)
             {
                 return View(songViewModel);
             }
-        
+
+
+            UploadFileDto uploadFileDto = new UploadFileDto()
+            {
+                contentType = songViewModel.File.ContentType,
+                objectKey = $"songs/{songViewModel.File.FileName}",
+                fileStream = songViewModel.File.OpenReadStream()
+            };
+            
+            await _ovhObjectStorageService.UploadFileAsync(uploadFileDto);
+            
             CreateEditSongDto createEditSongDto = new CreateEditSongDto
             {
                 Title = songViewModel.Title,
@@ -82,7 +97,7 @@ public class SongController : Controller
         }
         catch (Exception e)
         {
-            ViewData["Error"] = "An error occurred";
+            ViewData["Error"] = e.Message;
             return View();
         }
     }
