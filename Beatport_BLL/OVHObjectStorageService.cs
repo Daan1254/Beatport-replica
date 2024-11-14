@@ -20,15 +20,14 @@ public class OVHObjectStorageService : IOVHObjectStorageService
         string secretKey = DotEnv.Read()["OVH_SECRET_KEY"];
         string serviceUrl = DotEnv.Read()["OVH_ENDPOINT"];
         _bucketName = DotEnv.Read()["OVH_CONTAINER_NAME"];
-
         _s3Client = new AmazonS3Client(
             accessKey,
             secretKey,
             new AmazonS3Config
             {
-                RegionEndpoint = RegionEndpoint.EUCentral1,
                 ServiceURL = serviceUrl,
-                ForcePathStyle = true // OVH requires this setting
+                ForcePathStyle = true, // OVH requires this setting
+                RegionEndpoint = RegionEndpoint.EUCentral1,
             });
     }
     
@@ -62,7 +61,7 @@ public class OVHObjectStorageService : IOVHObjectStorageService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw new BadRequestException(ex.Message, ex);
         }
     }
 }

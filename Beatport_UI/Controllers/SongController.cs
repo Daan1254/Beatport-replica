@@ -72,7 +72,7 @@ public class SongController : Controller
             UploadFileDto uploadFileDto = new UploadFileDto()
             {
                 contentType = songViewModel.File.ContentType,
-                objectKey = $"songs/{songViewModel.File.FileName}",
+                objectKey = $"{songViewModel.File.FileName}",
                 fileStream = songViewModel.File.OpenReadStream()
             };
             
