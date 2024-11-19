@@ -1,0 +1,45 @@
+@model IEnumerable<Beatport_UI.Models.Playlist.PlaylistViewModel>
+
+
+@* <div class="grid grid-flow-col auto-cols-max mt-10"> *@
+@*    @foreach(var item in Model) *@
+@*    { *@
+@*       <div class="max-w-lg rounded-lg shadow bg-[#1B1C1E]"> *@
+@*          <a href="#"> *@
+@*             <img  class="rounded-t-lg w-full object-fit h-32" src="https://cdn.discordapp.com/attachments/735986129123410002/1304093082391806105/feel_alive.png?ex=673d4c13&is=673bfa93&hm=801b009a948d1915e2b894800ea0e2eb9bb7a199e6b712899289b88503746332&" alt="" /> *@
+@*          </a> *@
+@*          <div class="p-2"> *@
+@*             <a href="#"> *@
+@*                <h5 class="mb-2 text-2xl font-bold tracking-tight text-white">Daan's playlist</h5> *@
+@*             </a> *@
+@*          </div> *@
+@*       </div> *@
+@*    }  *@
+@* </div> *@
+
+
+<table class="table table-dark">
+   <thead>
+           <tr>
+               <th>
+                   @Html.DisplayNameFor(model => model.Title)
+               </th>
+               <th class=" mr-10">
+                   Actions
+               </th>
+           </tr>
+       </thead>
+       <tbody>
+       @foreach (var item in Model) {
+           <tr>
+               <td>
+                   @Html.DisplayFor(modelItem => item.Title)
+               </td>
+               <td>
+                   @* @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" }) *@
+                   @* @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })  *@
+               </td>
+           </tr>
+   }
+       </tbody>
+</table>
