@@ -22,4 +22,15 @@ public class PlaylistService : IPlaylistService
             throw new Exception(e.Message);
         }
     }
+    
+    public PlaylistDto? GetPlaylist(int id)
+    {
+        try
+        {
+            return _playlistRepository.GetPlaylist(id);
+        } catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }

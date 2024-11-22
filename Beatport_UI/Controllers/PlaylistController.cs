@@ -28,4 +28,25 @@ public class PlaylistController : Controller
         
         return View(playlistViewModels);
     }
+    
+    
+    public IActionResult Details(int id)
+    {
+        PlaylistDto? playlistDto = _playlistService.GetPlaylist(id);
+        
+        if (playlistDto == null)
+        {
+            return NotFound();
+        }
+        
+        PlaylistWithSongsViewModel playlistWithSongsViewModel = new PlaylistWithSongsViewModel
+        {
+            Id = playlistDto.Id,
+            Title = playlistDto.Title,
+            Description = playlistDto.Description,
+            Songs = new List<SongDto>(),
+        };
+        
+        return View(playlistWithSongsViewModel);
+    }
 }
