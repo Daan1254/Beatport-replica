@@ -1,3 +1,4 @@
+using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 
@@ -17,9 +18,9 @@ public class PlaylistService : IPlaylistService
         try
         {
             return _playlistRepository.GetAllPlaylists();
-        } catch (Exception e)
+        } catch (PlaylistRepositoryException ex)
         {
-            throw new Exception(e.Message);
+            throw new PlaylistServiceException(ex.Message);
         }
     }
     
@@ -27,10 +28,17 @@ public class PlaylistService : IPlaylistService
     {
         try
         {
-            return _playlistRepository.GetPlaylist(id);
-        } catch (Exception e)
+            PlaylistDto? playlistDto =  _playlistRepository.GetPlaylist(id);
+            
+            if (playlistDto == null)
+            {
+                throw new NotFoundException($"Playlist with id {id} not found");
+            }
+            
+            return playlistDto;
+        } catch (PlaylistRepositoryException ex)
         {
-            throw new Exception(e.Message);
+            throw new PlaylistServiceException(ex.Message);
         }
     }
 }

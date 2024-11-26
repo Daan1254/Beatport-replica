@@ -34,14 +34,9 @@ public class SongController : Controller
         
             return View(songViewModels);
         }
-        catch (BadRequestException ex)
+        catch (SongServiceException ex)
         {
             ViewData["Error"] = ex.Message;
-            return View();
-        }
-        catch (Exception ex)
-        {
-            ViewData["Error"] = "An error occurred";
             return View();
         }
     }
@@ -56,33 +51,27 @@ public class SongController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Create(SongViewModel songViewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(songViewModel);
+        }
+        
+        CreateEditSongDto createEditSongDto = new CreateEditSongDto
+        {
+            Title = songViewModel.Title,
+            Genre = songViewModel.Genre,
+            Bpm = songViewModel.Bpm
+        };
+        
         try
         {
-            if (!ModelState.IsValid)
-            {
-                return View(songViewModel);
-            }
-        
-            CreateEditSongDto createEditSongDto = new CreateEditSongDto
-            {
-                Title = songViewModel.Title,
-                Genre = songViewModel.Genre,
-                Bpm = songViewModel.Bpm
-            };
-            
             _songService.CreateSong(createEditSongDto);
             
             return RedirectToAction("Index", "Home");
-
         } 
-        catch (BadRequestException ex)
+        catch (SongServiceException ex)
         {
             ViewData["Error"] = ex.Message;
-            return View();
-        }
-        catch (Exception e)
-        {
-            ViewData["Error"] = "An error occurred";
             return View();
         }
     }
@@ -92,7 +81,7 @@ public class SongController : Controller
         try
         {
             SongDto songDto = _songService.GetSong(Id);
-            
+
             SongViewModel songViewModel = new SongViewModel
             {
                 Id = songDto.Id,
@@ -100,21 +89,16 @@ public class SongController : Controller
                 Genre = songDto.Genre,
                 Bpm = songDto.Bpm
             };
-        
+
             return View(songViewModel);
         }
-        catch (SongNotFoundException ex)
+        catch (NotFoundException ex)
         {
             return NotFound();
         }
-        catch (BadRequestException ex)
+        catch (SongServiceException ex)
         {
             ViewData["Error"] = ex.Message;
-            return View();
-        }
-        catch (Exception e)
-        {
-            ViewData["Error"] = "An unknown error occurred";
             return View();
         }
     }
@@ -123,36 +107,31 @@ public class SongController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Edit(SongViewModel songViewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(songViewModel);
+        }
+        
+        CreateEditSongDto createEditSongDto = new CreateEditSongDto
+        {
+            Title = songViewModel.Title,
+            Genre = songViewModel.Genre,
+            Bpm = songViewModel.Bpm
+        };
+        
         try
         {
-            if (!ModelState.IsValid)
-            {
-                return View(songViewModel);
-            }
-        
-            CreateEditSongDto createEditSongDto = new CreateEditSongDto
-            {
-                Title = songViewModel.Title,
-                Genre = songViewModel.Genre,
-                Bpm = songViewModel.Bpm
-            };
-            
             _songService.EditSong(songViewModel.Id, createEditSongDto);
             
             return RedirectToAction("Index");
-
-        } catch(SongNotFoundException ex)
+        } 
+        catch(NotFoundException)
         {
             return NotFound();
         }
-        catch (BadRequestException ex)
+        catch (SongServiceException ex)
         {
             ViewData["Error"] = ex.Message;
-            return View();
-        }
-        catch (Exception ex)
-        {
-            ViewData["Error"] = "An error occurred";
             return View();
         }
     }
@@ -171,18 +150,13 @@ public class SongController : Controller
         
             return View(songViewModel);
         }
-        catch (SongNotFoundException ex)
+        catch (NotFoundException)
         {
             return NotFound();
         }
-        catch (BadRequestException ex)
+        catch (SongServiceException ex)
         {
             ViewData["Error"] = ex.Message;
-            return View();
-        }
-        catch (Exception e)
-        {
-            ViewData["Error"] = "An unknown error occurred";
             return View();
         }
     }
@@ -196,13 +170,13 @@ public class SongController : Controller
             _songService.DeleteSong(Id);
             return RedirectToAction("Index");
         }
-        catch (SongNotFoundException ex)
+        catch (NotFoundException)
         {
             return NotFound();
         }
-        catch (Exception e)
+        catch (SongServiceException ex)
         {
-            ViewData["Error"] = "An error occurred";
+            ViewData["Error"] = ex.Message;
             return RedirectToAction("Index");
         }
     }
