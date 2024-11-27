@@ -24,11 +24,11 @@ public class PlaylistService : IPlaylistService
         }
     }
     
-    public PlaylistDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id)
     {
         try
         {
-            PlaylistDto? playlistDto =  _playlistRepository.GetPlaylist(id);
+            PlaylistWithSongsDto? playlistDto =  _playlistRepository.GetPlaylist(id);
             
             if (playlistDto == null)
             {
@@ -36,6 +36,17 @@ public class PlaylistService : IPlaylistService
             }
             
             return playlistDto;
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+    
+    public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.DeleteSongFromPlaylist(addRemoveSongFromPlaylistDto);
         } catch (PlaylistRepositoryException ex)
         {
             throw new PlaylistServiceException(ex.Message);

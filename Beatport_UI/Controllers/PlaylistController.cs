@@ -1,5 +1,7 @@
+using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
+using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,21 +34,65 @@ public class PlaylistController : Controller
     
     public IActionResult Details(int id)
     {
-        PlaylistDto? playlistDto = _playlistService.GetPlaylist(id);
+        try
+        {
+            PlaylistWithSongsDto? playlistDto = _playlistService.GetPlaylist(id);
         
-        if (playlistDto == null)
+            if (playlistDto == null)
+            {
+                return NotFound();
+            }
+        
+            PlaylistWithSongsViewModel playlistWithSongsViewModel = new PlaylistWithSongsViewModel
+            {
+                Id = playlistDto.Id,
+                Title = playlistDto.Title,
+                Description = playlistDto.Description,
+                Songs = playlistDto.Songs.Select(songDto => new SongViewModel
+                {
+                    Id = songDto.Id,
+                    Title = songDto.Title,
+                    Genre = songDto.Genre,
+                    Bpm = songDto.Bpm,
+                }).ToList() 
+            };
+        
+            return View(playlistWithSongsViewModel);
+        }
+        catch (NotFoundException)
         {
             return NotFound();
         }
-        
-        PlaylistWithSongsViewModel playlistWithSongsViewModel = new PlaylistWithSongsViewModel
+        catch (PlaylistServiceException ex)
         {
-            Id = playlistDto.Id,
-            Title = playlistDto.Title,
-            Description = playlistDto.Description,
-            Songs = new List<SongDto>(),
+            TempData["Error"] = ex.Message;
+            return RedirectToAction("Index");
+        }
+    }
+    
+    [HttpPost]
+    public IActionResult DeleteSongFromPlaylist(int songId, int playlistId)
+    {
+        AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto = new AddRemoveSongFromPlaylistDto
+        {
+            SongId = songId,
+            PlaylistId = playlistId,
         };
         
-        return View(playlistWithSongsViewModel);
+        try
+        {
+            _playlistService.DeleteSongFromPlaylist(addRemoveSongFromPlaylistDto);
+            return RedirectToAction("Details", new { id = playlistId });
+        }
+        catch (NotFoundException ex)
+        {
+            TempData["Error"] = ex.Message;
+            return RedirectToAction("Details", new { id = playlistId });
+        }
+        catch (PlaylistServiceException ex)
+        {
+            TempData["Error"] = ex.Message;
+            return RedirectToAction("Index");
+        }
     }
 }

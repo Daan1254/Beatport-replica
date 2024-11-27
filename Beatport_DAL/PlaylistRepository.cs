@@ -48,7 +48,7 @@ public class PlaylistRepository : IPlaylistRepository
         }
     }
     
-    public PlaylistDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id)
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand($@"
@@ -59,11 +59,11 @@ public class PlaylistRepository : IPlaylistRepository
                 s.Id AS SongId,
                 s.Title AS SongTitle,
                 s.Bpm AS SongBpm,
-                s.Genre AS SongGenre,
+                s.Genre AS SongGenre
             FROM 
                 Playlists p
             LEFT JOIN 
-                Playlist_Songs ps ON p.Id = ps.PlaylistId
+                Song_Playlist ps ON p.Id = ps.PlaylistId
             LEFT JOIN 
                 Songs s ON ps.SongId = s.Id
             WHERE 
@@ -76,7 +76,7 @@ public class PlaylistRepository : IPlaylistRepository
             connection.Open();
 
             using MySqlDataReader reader = command.ExecuteReader();
-            PlaylistDto? playlistDto = null;
+            PlaylistWithSongsDto? playlistDto = null;
             List<SongDto> songs = new List<SongDto>();
 
             while (reader.Read())
@@ -99,9 +99,8 @@ public class PlaylistRepository : IPlaylistRepository
                     {
                         Id = reader.GetInt32("SongId"),
                         Title = reader.GetString("SongTitle"),
-                        Bpm = reader.GetInt32("Bpm"),
-                        Genre = reader.GetString("Genre"),
-                        // Artist = reader.IsDBNull(reader.GetOrdinal("SongArtist")) ? null : reader.GetString("SongArtist"),
+                        Bpm = reader.GetInt32("SongBpm"),
+                        Genre = reader.GetString("SongGenre"),
                     });
                 }
             }
@@ -110,6 +109,27 @@ public class PlaylistRepository : IPlaylistRepository
         catch (MySqlException ex)
         {
             throw new PlaylistRepositoryException("An error occurred while fetching playlist.", ex);
+        }
+    }
+    
+    public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(@"
+            DELETE FROM Song_Playlist
+            WHERE SongId = @SongId AND PlaylistId = @PlaylistId;
+        ", connection);
+        command.Parameters.AddWithValue("@SongId", addRemoveSongFromPlaylistDto.SongId);
+        command.Parameters.AddWithValue("@PlaylistId", addRemoveSongFromPlaylistDto.PlaylistId);
+        
+        try
+        {
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("An error occurred while removing Song from playlist.", ex);
         }
     }
 }

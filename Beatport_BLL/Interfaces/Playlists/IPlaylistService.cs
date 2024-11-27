@@ -5,5 +5,7 @@ namespace Beatport_BLL.Interfaces;
 public interface IPlaylistService
 {
     public List<PlaylistDto> GetAllPlaylists();
-    public PlaylistDto? GetPlaylist(int id);
+    public PlaylistWithSongsDto? GetPlaylist(int id);
+    
+    public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto);
 }
