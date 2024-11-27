@@ -8,4 +8,6 @@ public interface IPlaylistService
     public PlaylistWithSongsDto? GetPlaylist(int id);
     
     public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto);
+    
+    public void AddSongToPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto);
 }

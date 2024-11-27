@@ -36,18 +36,22 @@
     </tr>
     </thead>
     <tbody>
+    
     @foreach (var item in Model)
     {
-        <a asp-controller="Playlist" asp-action="Details" asp-route-id="@item.Id">
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
-                @* @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" }) *@
-                @* @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })  *@
-            </td>
-        </a>
+        <tr>
+            <a asp-controller="Playlist" asp-action="Details" asp-route-id="@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
+                    @* @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" }) *@
+                    @* @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })  *@
+                </td>
+            </a>
+            
+        </tr>
     }
     </tbody>
 </table>

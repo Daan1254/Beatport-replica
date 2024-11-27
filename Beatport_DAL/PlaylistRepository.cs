@@ -114,6 +114,13 @@ public class PlaylistRepository : IPlaylistRepository
     
     public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
     {
+        bool alreadyExists = IsSongAlreadyInPlaylist(addRemoveSongFromPlaylistDto.SongId, addRemoveSongFromPlaylistDto.PlaylistId);
+        
+        if (!alreadyExists)
+        {
+            throw new PlaylistRepositoryException("Song is not in playlist.");
+        }
+        
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(@"
             DELETE FROM Song_Playlist
@@ -130,6 +137,55 @@ public class PlaylistRepository : IPlaylistRepository
         catch (MySqlException ex)
         {
             throw new PlaylistRepositoryException("An error occurred while removing Song from playlist.", ex);
+        }
+    }
+    
+    public void AddSongToPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
+    {
+        bool alreadyExists = IsSongAlreadyInPlaylist(addRemoveSongFromPlaylistDto.SongId, addRemoveSongFromPlaylistDto.PlaylistId);
+        
+        if (alreadyExists)
+        {
+            throw new PlaylistRepositoryException("Song is already in playlist.");
+        } 
+        
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(@"
+            INSERT INTO Song_Playlist (SongId, PlaylistId)
+            VALUES (@SongId, @PlaylistId);
+        ", connection);
+        command.Parameters.AddWithValue("@SongId", addRemoveSongFromPlaylistDto.SongId);
+        command.Parameters.AddWithValue("@PlaylistId", addRemoveSongFromPlaylistDto.PlaylistId);
+        
+        try
+        {
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("An error occurred while adding Song to playlist.", ex);
+        }
+    }
+    
+    private bool IsSongAlreadyInPlaylist(int songId, int playlistId)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(@"
+            SELECT COUNT(*) FROM Song_Playlist
+            WHERE SongId = @SongId AND PlaylistId = @PlaylistId;
+        ", connection);
+        command.Parameters.AddWithValue("@SongId", songId);
+        command.Parameters.AddWithValue("@PlaylistId", playlistId);
+        
+        try
+        {
+            connection.Open();
+            return (long)command.ExecuteScalar() > 0;
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("An error occurred while checking if Song is in playlist.", ex);
         }
     }
 }

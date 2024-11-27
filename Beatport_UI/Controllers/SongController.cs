@@ -3,6 +3,7 @@ using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
+using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beatport_UI.Controllers;
@@ -11,10 +12,12 @@ public class SongController : Controller
 {
     
     private readonly ISongService _songService;
+    private readonly IPlaylistService _playlistService;
     
-    public SongController(ISongService songService)
+    public SongController(ISongService songService, IPlaylistService playlistService)
     {
         _songService = songService;
+        _playlistService = playlistService;
     }
     
     // GET
@@ -169,6 +172,72 @@ public class SongController : Controller
         {
             _songService.DeleteSong(Id);
             return RedirectToAction("Index");
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+        catch (SongServiceException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return RedirectToAction("Index");
+        }
+    }
+    
+    public ActionResult ConnectToPlaylist(int id)
+    {
+        try
+        {
+            SongDto songDto = _songService.GetSong(id);
+            List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists();
+            
+            List<PlaylistViewModel> playlistViewModels = playlistDtos.Select(dto => new PlaylistViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+            }).ToList();
+            
+            ConnectToPlaylistViewModel connectToPlaylistViewModel = new ConnectToPlaylistViewModel
+            {
+                Id = songDto.Id,
+                Title = songDto.Title,
+                Genre = songDto.Genre,
+                Bpm = songDto.Bpm,
+                Playlists = playlistViewModels,
+            };
+            
+            return View(connectToPlaylistViewModel);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+        catch (SongServiceException ex)
+        {
+            ViewData["Error"] = ex.Message;
+            return RedirectToAction("Index");
+        }
+    }
+    
+    [HttpPost]
+    public ActionResult ConnectToPlaylist(ConnectToPlaylistViewModel connectToPlaylistViewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(connectToPlaylistViewModel);
+        }
+        
+        try
+        {
+            AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto = new AddRemoveSongFromPlaylistDto
+            {
+                SongId = connectToPlaylistViewModel.Id,
+                PlaylistId = connectToPlaylistViewModel.SelectedPlaylistId
+            };
+            
+            _playlistService.AddSongToPlaylist(addRemoveSongFromPlaylistDto);
+            
+            return RedirectToAction("Details", "Playlist", new { id = connectToPlaylistViewModel.SelectedPlaylistId });
         }
         catch (NotFoundException)
         {

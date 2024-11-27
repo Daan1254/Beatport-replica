@@ -52,4 +52,15 @@ public class PlaylistService : IPlaylistService
             throw new PlaylistServiceException(ex.Message);
         }
     }
+    
+    public void AddSongToPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.AddSongToPlaylist(addRemoveSongFromPlaylistDto);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
 }
