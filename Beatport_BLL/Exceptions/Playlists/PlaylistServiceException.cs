@@ -7,6 +7,6 @@ public class PlaylistServiceException : Exception
     }
 
     public PlaylistServiceException(string message, Exception innerException) : base(message, innerException)
-    {
+    { 
     }
 }

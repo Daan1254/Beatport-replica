@@ -36,7 +36,6 @@ public class PlaylistRepository : IPlaylistRepository
                     Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? (string?)null : reader.GetString("Description"),
                 };
                 
-                Console.WriteLine(playlistDto.Title); 
                 playlistDtos.Add(playlistDto);
             }
                     

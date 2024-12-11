@@ -243,9 +243,9 @@ public class SongController : Controller
         {
             return NotFound();
         }
-        catch (SongServiceException ex)
+        catch (PlaylistServiceException ex)
         {
-            ViewData["Error"] = ex.Message;
+            TempData["Error"] = ex.Message;
             return RedirectToAction("Index");
         }
     }
