@@ -19,9 +19,9 @@ public class SongService : ISongService
         {
             return _songRepository.GetAllSongs();
         }
-        catch (Exception ex)
+        catch (SongRepositoryException ex)
         {
-            throw new BadRequestException("An error occurred while fetching songs.", ex);
+            throw new SongServiceException("An error occurred while fetching songs.", ex);
         }
     }
     
@@ -33,14 +33,14 @@ public class SongService : ISongService
 
             if (song == null)
             {
-                throw new SongNotFoundException(id);
+                throw new NotFoundException($"Song with id {id} not found");
             }
         
             return song;
         }
-        catch (Exception ex)
+        catch (SongRepositoryException ex)
         {
-            throw new BadRequestException("An error occurred while fetching song.", ex);
+            throw new SongServiceException("An error occurred while fetching song.", ex);
         }
         
     }
@@ -51,9 +51,9 @@ public class SongService : ISongService
         {
             return _songRepository.CreateSong(createEditSongDto);
         }
-        catch (Exception ex)
+        catch (SongRepositoryException ex)
         {
-            throw new BadRequestException("An error occurred while creating song.", ex);
+            throw new SongServiceException("An error occurred while creating song.", ex);
         }
     }
 
@@ -65,14 +65,14 @@ public class SongService : ISongService
 
             if (song == null)
             {
-                throw new SongNotFoundException(id);
+                throw new NotFoundException($"Song with id {id} not found");
             }
         
             return _songRepository.EditSong(id, createEditSongDto);
         }
-        catch (Exception ex)
+        catch (SongRepositoryException ex)
         {
-            throw new Exception("An error occurred while editing song.", ex);
+            throw new SongServiceException("An error occurred while editing song.", ex);
         }
     }
     
@@ -84,17 +84,16 @@ public class SongService : ISongService
 
             if (song == null)
             {
-                throw new SongNotFoundException(id);
+                throw new NotFoundException($"Song with id {id} not found");
             }
         
             // TODO: Add Soft Delete and check if author is the same
         
             return _songRepository.DeleteSong(id);
         }
-        catch (Exception ex)
+        catch (SongRepositoryException ex)
         {
-            throw new BadRequestException("An error occurred while deleting song.", ex);
+            throw new SongServiceException("An error occurred while deleting song.", ex);
         }
-        
     }
 }

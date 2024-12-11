@@ -13,13 +13,14 @@
     <nav class=" navbar navbar-expand-sm navbar-toggleable-sm text-white bg-[#1B1C1E] shadow-b-lg mb-3">
         <div class="container-fluid container mx-auto">
             <div class="flex flex-row gap-3 items-center">
-                <a class="navbar-brand hover:text-white" asp-area="" asp-controller="Home" asp-action="Index">Beatport<sup class="text-[#01FF95]">+</sup></a>
+                <a class="navbar-brand hover:text-white" asp-controller="Home" asp-action="Index">Beatport<sup class="text-[#01FF95]">+</sup></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a class="text-white" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="text-white" asp-controller="Song" asp-action="Index">Your songs</a>
+                <a class="text-white" asp-controller="Song" asp-action="Index">Collection</a>
+                <a class="text-white" asp-controller="Playlist" asp-action="Index">Your playlists</a>
             </div>
             <div class="flex flex-row items-center gap-10">
                 <a asp-controller="Song" asp-action="Create"  class="btn btn-info bg-[#01FF95] border-none text-uppercase text-gray-800 font-bold">Upload Music</a>

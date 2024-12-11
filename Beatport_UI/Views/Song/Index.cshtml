@@ -37,8 +37,9 @@
             
             
             <td>
+                @Html.ActionLink("Add to playlist", "ConnectToPlaylist", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" }) 
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })
             </td>
         </tr>
 }

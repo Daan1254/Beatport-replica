@@ -15,4 +15,8 @@
       <ProjectReference Include="..\Beatport_DAL\Beatport_DAL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Playlist\Index.cshtml" />
+    </ItemGroup>
+
 </Project>

@@ -7,8 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<ISongService, SongService>();
 builder.Services.AddScoped<ISongRepository, SongRepository>();
+
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+
 
 DotEnv.Load();
 
