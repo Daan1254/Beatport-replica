@@ -33,7 +33,7 @@ public class SongTests
         List<SongDto> result = _songService.GetAllSongs();
 
         // Assert
-        Assert.That(result, Is.EqualTo(expectedSongs));
+        Assert.That(result, Is.EqualTo(expectedSongs)); 
     }
 
     [Test]
@@ -50,11 +50,11 @@ public class SongTests
     public void GetSong_WithValidId_ShouldReturnSong()
     {
         // Arrange
-        var expectedSong = new SongDto { Id = 1, Title = "Test Song" };
+        SongDto expectedSong = new SongDto { Id = 1, Title = "Test Song" };
         _mockSongRepository.Setup(x => x.GetSong(1)).Returns(expectedSong);
 
         // Act
-        var result = _songService.GetSong(1);
+        SongDto result = _songService.GetSong(1);
 
         // Assert
         Assert.That(result, Is.EqualTo(expectedSong));
@@ -74,11 +74,11 @@ public class SongTests
     public void CreateSong_WithValidData_ShouldReturnTrue()
     {
         // Arrange
-        var songDto = new CreateEditSongDto { Title = "New Song" };
+        CreateEditSongDto songDto = new CreateEditSongDto { Title = "New Song" };
         _mockSongRepository.Setup(x => x.CreateSong(songDto)).Returns(true);
 
         // Act
-        var result = _songService.CreateSong(songDto);
+        bool result = _songService.CreateSong(songDto);
 
         // Assert
         Assert.That(result, Is.True);
@@ -88,7 +88,7 @@ public class SongTests
     public void CreateSong_WhenRepositoryThrowsException_ShouldThrowSongServiceException()
     {
         // Arrange
-        var songDto = new CreateEditSongDto { Title = "New Song" };
+        CreateEditSongDto songDto = new CreateEditSongDto { Title = "New Song" };
         _mockSongRepository.Setup(x => x.CreateSong(songDto)).Throws<SongRepositoryException>();
 
         // Act & Assert
@@ -99,12 +99,12 @@ public class SongTests
     public void EditSong_WithValidData_ShouldReturnTrue()
     {
         // Arrange
-        var songDto = new CreateEditSongDto { Title = "Updated Song" };
+        CreateEditSongDto songDto = new CreateEditSongDto { Title = "Updated Song" };
         _mockSongRepository.Setup(x => x.GetSong(1)).Returns(new SongDto { Id = 1 });
         _mockSongRepository.Setup(x => x.EditSong(1, songDto)).Returns(true);
 
         // Act
-        var result = _songService.EditSong(1, songDto);
+        bool result = _songService.EditSong(1, songDto);
 
         // Assert
         Assert.That(result, Is.True);
@@ -114,7 +114,7 @@ public class SongTests
     public void EditSong_WithInvalidId_ShouldThrowNotFoundException()
     {
         // Arrange
-        var songDto = new CreateEditSongDto { Title = "Updated Song" };
+        CreateEditSongDto songDto = new CreateEditSongDto { Title = "Updated Song" };
         _mockSongRepository.Setup(x => x.GetSong(1)).Returns((SongDto)null);
 
         // Act & Assert
@@ -129,7 +129,7 @@ public class SongTests
         _mockSongRepository.Setup(x => x.DeleteSong(1)).Returns(true);
 
         // Act
-        var result = _songService.DeleteSong(1);
+        bool result = _songService.DeleteSong(1);
 
         // Assert
         Assert.That(result, Is.True);
