@@ -20,6 +20,7 @@ public class SongRepository : ISongRepository
        
         List<SongDto> songs = new List<SongDto>();
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
+        
         using MySqlCommand cmd = new MySqlCommand("SELECT * FROM songs", mySqlConnection);
         
         try

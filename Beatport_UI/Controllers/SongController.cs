@@ -184,7 +184,7 @@ public class SongController : Controller
         }
     }
     
-    public ActionResult ConnectToPlaylist(int id)
+    public IActionResult ConnectToPlaylist(int id)
     {
         try
         {

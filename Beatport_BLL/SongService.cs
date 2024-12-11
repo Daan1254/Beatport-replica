@@ -40,7 +40,7 @@ public class SongService : ISongService
         }
         catch (SongRepositoryException ex)
         {
-            throw new SongServiceException("An error occurred while fetching song.", ex.InnerException);
+            throw new SongServiceException("An error occurred while fetching song.", ex);
         }
         
     }
