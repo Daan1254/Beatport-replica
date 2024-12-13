@@ -1,21 +1,24 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Beatport_UI.Models;
 
 public class SongViewModel
 {
-    [Required]
     public int Id { get; set; }
     
     [Required]
-    [StringLength(60, MinimumLength = 3)]
     public string Title { get; set; }
     
     [Required]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
     public string Genre { get; set; }
     
     [Required]
-    [RegularExpression("^[1-9]\\d*$")]
+    [Range(1, 999)]
     public int Bpm { get; set; }
+    
+    [Required(ErrorMessage = "Please select a song file")]
+    public IFormFile SongFile { get; set; }
+    
+    public string? FilePath { get; set; }
 }

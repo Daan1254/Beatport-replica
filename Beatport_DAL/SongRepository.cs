@@ -17,7 +17,6 @@ public class SongRepository : ISongRepository
     
     public List<SongDto> GetAllSongs()
     {
-       
         List<SongDto> songs = new List<SongDto>();
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
         
@@ -37,6 +36,7 @@ public class SongRepository : ISongRepository
                     Title = reader.GetString("title"),
                     Genre = reader.GetString("genre"),
                     Bpm = reader.GetInt32("bpm"),
+                    FilePath = reader.GetString("file_path"),
                     CreatedAt = reader.GetDateTime("CreatedAt"),
                     UpdatedAt = reader.IsDBNull(reader.GetOrdinal("UpdatedAt")) ? (DateTime?)null : reader.GetDateTime("UpdatedAt"),
                     DeletedAt = reader.IsDBNull(reader.GetOrdinal("DeletedAt")) ? (DateTime?)null : reader.GetDateTime("DeletedAt"),
@@ -92,21 +92,24 @@ public class SongRepository : ISongRepository
     public bool CreateSong(CreateEditSongDto createEditSongDto)
     {
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
-        using MySqlCommand cmd = new MySqlCommand("INSERT INTO songs (title, genre, bpm) VALUES (@title, @genre, @bpm)", mySqlConnection);
+        using MySqlCommand cmd = new MySqlCommand(
+            "INSERT INTO songs (title, genre, bpm, file_path) VALUES (@title, @genre, @bpm, @filePath)", 
+            mySqlConnection);
+        
         cmd.Parameters.AddWithValue("@title", createEditSongDto.Title);
         cmd.Parameters.AddWithValue("@genre", createEditSongDto.Genre);
         cmd.Parameters.AddWithValue("@bpm", createEditSongDto.Bpm);
+        cmd.Parameters.AddWithValue("@filePath", createEditSongDto.FilePath);
+        
         try
         {
             mySqlConnection.Open();
-            
             return cmd.ExecuteNonQuery() > 0;
         }
         catch (MySqlException ex)
         {
             throw new SongRepositoryException("An error occurred while creating song.", ex);
         }
-        
     }
     
     

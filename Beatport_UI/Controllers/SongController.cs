@@ -33,6 +33,7 @@ public class SongController : Controller
                 Title = dto.Title,
                 Genre = dto.Genre,
                 Bpm = dto.Bpm,
+                FilePath = dto.FilePath
             }).ToList();
         
             return View(songViewModels);
@@ -52,22 +53,40 @@ public class SongController : Controller
     
     [HttpPost] 
     [ValidateAntiForgeryToken]
-    public ActionResult Create(SongViewModel songViewModel)
+    public async Task<ActionResult> Create(SongViewModel songViewModel)
     {
         if (!ModelState.IsValid)
         {
             return View(songViewModel);
         }
-        
-        CreateEditSongDto createEditSongDto = new CreateEditSongDto
-        {
-            Title = songViewModel.Title,
-            Genre = songViewModel.Genre,
-            Bpm = songViewModel.Bpm
-        };
-        
+
         try
         {
+            // Handle file upload
+            string fileName = $"{Guid.NewGuid()}_{songViewModel.Title}{Path.GetExtension(songViewModel.SongFile.FileName)}";
+            string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            
+            // Create directory if it doesn't exist
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await songViewModel.SongFile.CopyToAsync(fileStream);
+            }
+
+            CreateEditSongDto createEditSongDto = new CreateEditSongDto
+            {
+                Title = songViewModel.Title,
+                Genre = songViewModel.Genre,
+                Bpm = songViewModel.Bpm,
+                FilePath = $"/uploads/{fileName}" // Store the relative path
+            };
+            
             _songService.CreateSong(createEditSongDto);
             
             return RedirectToAction("Index", "Home");
