@@ -5,6 +5,7 @@ using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Beatport_UI.Controllers;
 
@@ -22,7 +23,13 @@ public class PlaylistController : Controller
     [Authorize]
     public IActionResult Index()
     {
-        List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists();
+        int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists(userId);
         
         List<PlaylistViewModel> playlistViewModels = playlistDtos.Select(dto => new PlaylistViewModel
         {
@@ -39,7 +46,13 @@ public class PlaylistController : Controller
     {
         try
         {
-            PlaylistWithSongsDto? playlistDto = _playlistService.GetPlaylist(id);
+            int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            PlaylistWithSongsDto? playlistDto = _playlistService.GetPlaylist(id, userId);
         
             if (playlistDto == null)
             {

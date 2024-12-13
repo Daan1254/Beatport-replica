@@ -6,6 +6,7 @@ using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Beatport_UI.Controllers;
 
@@ -27,7 +28,13 @@ public class SongController : Controller
     {
         try
         {
-            List<SongDto> songDtos = _songService.GetAllSongs();
+            int? userId = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
+
+            List<SongDto> songDtos = _songService.GetAllSongs(userId);
         
             List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
             {
@@ -65,6 +72,15 @@ public class SongController : Controller
 
         try
         {
+            // Get current user email and ID
+            string? userEmail = User.Identity?.Name;
+            int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (string.IsNullOrEmpty(userEmail) || userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             // Handle file upload
             string fileName = $"{Guid.NewGuid()}_{songViewModel.Title}{Path.GetExtension(songViewModel.SongFile.FileName)}";
             string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -87,7 +103,8 @@ public class SongController : Controller
                 Title = songViewModel.Title,
                 Genre = songViewModel.Genre,
                 Bpm = songViewModel.Bpm,
-                FilePath = $"/uploads/{fileName}" // Store the relative path
+                FilePath = $"/uploads/{fileName}", // Store the relative path
+                UserId = userId ?? 0 // Use the actual user ID instead of email
             };
             
             _songService.CreateSong(createEditSongDto);
@@ -106,7 +123,10 @@ public class SongController : Controller
     {
         try
         {
-            SongDto songDto = _songService.GetSong(Id);
+            int? userId = User.Identity?.IsAuthenticated == true 
+                ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                : null;
+            SongDto songDto = _songService.GetSong(Id, userId);
 
             SongViewModel songViewModel = new SongViewModel
             {
@@ -147,7 +167,10 @@ public class SongController : Controller
         
         try
         {
-            _songService.EditSong(songViewModel.Id, createEditSongDto);
+            int? userId = User.Identity?.IsAuthenticated == true 
+                ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                : null;
+            _songService.EditSong(songViewModel.Id, createEditSongDto, userId ?? 0);
             
             return RedirectToAction("Index");
         } 
@@ -167,7 +190,10 @@ public class SongController : Controller
     {
         try
         {
-            SongDto songDto = _songService.GetSong(Id);
+            int? userId = User.Identity?.IsAuthenticated == true 
+                ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                : null;
+            SongDto songDto = _songService.GetSong(Id, userId);
             
             DeleteSongViewModel songViewModel = new DeleteSongViewModel()
             {
@@ -194,7 +220,8 @@ public class SongController : Controller
     {
         try
         {
-            _songService.DeleteSong(Id);
+            int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _songService.DeleteSong(Id, userId ?? 0);
             return RedirectToAction("Index");
         }
         catch (NotFoundException)
@@ -213,8 +240,11 @@ public class SongController : Controller
     {
         try
         {
-            SongDto songDto = _songService.GetSong(id);
-            List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists();
+            int? userId = User.Identity?.IsAuthenticated == true 
+                ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                : null;
+            SongDto songDto = _songService.GetSong(id, userId);
+            List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists(userId);
             
             List<PlaylistViewModel> playlistViewModels = playlistDtos.Select(dto => new PlaylistViewModel
             {

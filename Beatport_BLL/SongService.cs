@@ -13,11 +13,11 @@ public class SongService : ISongService
         _songRepository = songRepository;
     }
 
-    public List<SongDto> GetAllSongs()
+    public List<SongDto> GetAllSongs(int? userId)
     {
         try
         {
-            return _songRepository.GetAllSongs();
+            return _songRepository.GetAllSongs(userId);
         }
         catch (SongRepositoryException ex)
         {
@@ -25,11 +25,11 @@ public class SongService : ISongService
         }
     }
     
-    public SongDto GetSong(int id)
+    public SongDto GetSong(int id, int? userId)
     {
         try
         {
-            SongDto? song = _songRepository.GetSong(id);
+            SongDto? song = _songRepository.GetSong(id, userId);
 
             if (song == null)
             {
@@ -57,11 +57,11 @@ public class SongService : ISongService
         }
     }
 
-    public bool EditSong(int id, CreateEditSongDto createEditSongDto)
+    public bool EditSong(int id, CreateEditSongDto createEditSongDto, int userId)
     {
         try
         {
-            SongDto? song = _songRepository.GetSong(id);
+            SongDto? song = _songRepository.GetSong(id, userId);
 
             if (song == null)
             {
@@ -76,11 +76,11 @@ public class SongService : ISongService
         }
     }
     
-    public bool DeleteSong(int id)
+    public bool DeleteSong(int id, int userId)
     {
         try
         {
-            SongDto? song = _songRepository.GetSong(id);
+            SongDto? song = _songRepository.GetSong(id, userId);
 
             if (song == null)
             {

@@ -13,22 +13,22 @@ public class PlaylistService : IPlaylistService
         _playlistRepository = playlistRepository;
     }
     
-    public List<PlaylistDto> GetAllPlaylists()
+    public List<PlaylistDto> GetAllPlaylists(int? userId)
     {
         try
         {
-            return _playlistRepository.GetAllPlaylists();
+            return _playlistRepository.GetAllPlaylists(userId);
         } catch (PlaylistRepositoryException ex)
         {
             throw new PlaylistServiceException(ex.Message);
         }
     }
     
-    public PlaylistWithSongsDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id, int? userId)
     {
         try
         {
-            PlaylistWithSongsDto? playlistDto =  _playlistRepository.GetPlaylist(id);
+            PlaylistWithSongsDto? playlistDto =  _playlistRepository.GetPlaylist(id, userId);
             
             if (playlistDto == null)
             {

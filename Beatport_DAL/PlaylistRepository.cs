@@ -15,10 +15,13 @@ public class PlaylistRepository : IPlaylistRepository
         connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
     }
     
-    public List<PlaylistDto> GetAllPlaylists()
+    public List<PlaylistDto> GetAllPlaylists(int? userId)
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
-        using MySqlCommand command = new MySqlCommand("SELECT * FROM Playlists", connection);
+        using MySqlCommand command = new MySqlCommand(
+            "SELECT * FROM Playlists WHERE user_id = @userId AND DeletedAt IS NULL", 
+            connection);
+        command.Parameters.AddWithValue("@userId", userId);
 
         try
         {
@@ -47,7 +50,7 @@ public class PlaylistRepository : IPlaylistRepository
         }
     }
     
-    public PlaylistWithSongsDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id, int? userId)
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand($@"
@@ -66,9 +69,10 @@ public class PlaylistRepository : IPlaylistRepository
             LEFT JOIN 
                 Songs s ON ps.SongId = s.Id
             WHERE 
-                p.Id = @Id;
+                p.Id = @Id AND p.user_id = @userId AND p.DeletedAt IS NULL;
         ", connection);
         command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@userId", userId);
         
         try
         {
