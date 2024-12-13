@@ -15,12 +15,21 @@ public class SongRepository : ISongRepository
         connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
     }
     
-    public List<SongDto> GetAllSongs()
+    public List<SongDto> GetAllSongs(int? userId)
     {
         List<SongDto> songs = new List<SongDto>();
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
         
-        using MySqlCommand cmd = new MySqlCommand("SELECT * FROM songs", mySqlConnection);
+        string query = userId.HasValue 
+            ? "SELECT * FROM songs WHERE user_id = @userId AND DeletedAt IS NULL"
+            : "SELECT * FROM songs WHERE DeletedAt IS NULL";
+        
+        using MySqlCommand cmd = new MySqlCommand(query, mySqlConnection);
+        
+        if (userId.HasValue)
+        {
+            cmd.Parameters.AddWithValue("@userId", userId);
+        }
         
         try
         {
@@ -50,12 +59,22 @@ public class SongRepository : ISongRepository
         }
     }
 
-    public SongDto? GetSong(int id)
+    public SongDto? GetSong(int id, int? userId)
     {
         SongDto? song = null;
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
-        using MySqlCommand cmd = new MySqlCommand("SELECT * FROM songs WHERE id = @id", mySqlConnection);
+        
+        string query = userId.HasValue
+            ? "SELECT * FROM songs WHERE id = @id AND user_id = @userId AND DeletedAt IS NULL"
+            : "SELECT * FROM songs WHERE id = @id AND DeletedAt IS NULL";
+        
+        using MySqlCommand cmd = new MySqlCommand(query, mySqlConnection);
+        
         cmd.Parameters.AddWithValue("@id", id);
+        if (userId.HasValue)
+        {
+            cmd.Parameters.AddWithValue("@userId", userId);
+        }
 
         mySqlConnection.Open();
         try
@@ -93,14 +112,14 @@ public class SongRepository : ISongRepository
     {
         using MySqlConnection mySqlConnection = new MySqlConnection(connectionStr);
         using MySqlCommand cmd = new MySqlCommand(
-            "INSERT INTO songs (title, genre, bpm, file_path) VALUES (@title, @genre, @bpm, @filePath)", 
+            "INSERT INTO songs (title, genre, bpm, file_path, user_id) VALUES (@title, @genre, @bpm, @filePath, @userId)", 
             mySqlConnection);
         
         cmd.Parameters.AddWithValue("@title", createEditSongDto.Title);
         cmd.Parameters.AddWithValue("@genre", createEditSongDto.Genre);
         cmd.Parameters.AddWithValue("@bpm", createEditSongDto.Bpm);
         cmd.Parameters.AddWithValue("@filePath", createEditSongDto.FilePath);
-        
+        cmd.Parameters.AddWithValue("@userId", createEditSongDto.UserId);
         try
         {
             mySqlConnection.Open();
@@ -147,6 +166,25 @@ public class SongRepository : ISongRepository
         } catch (MySqlException ex)
         {
             throw new SongRepositoryException("An error occurred while deleting song.", ex);
+        }
+    }
+
+    public async Task<int> GetTotalSongsByUser(int userId)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand cmd = new MySqlCommand(
+            "SELECT COUNT(*) FROM songs WHERE user_id = @userId", connection);
+        
+        cmd.Parameters.AddWithValue("@userId", userId);
+        
+        try
+        {
+            await connection.OpenAsync();
+            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        }
+        catch (MySqlException ex)
+        {
+            throw new SongRepositoryException("Error getting total songs count", ex);
         }
     }
 }

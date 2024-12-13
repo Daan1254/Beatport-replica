@@ -23,7 +23,30 @@
                 <a class="text-white" asp-controller="Playlist" asp-action="Index">Your playlists</a>
             </div>
             <div class="flex flex-row items-center gap-10">
-                <a asp-controller="Song" asp-action="Create"  class="btn btn-info bg-[#01FF95] border-none text-uppercase text-gray-800 font-bold">Upload Music</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="flex items-center gap-4">
+                        <a asp-controller="Account" asp-action="Profile" class="text-white/80 hover:text-white">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-[#262626] rounded-full flex items-center justify-center">
+                                    <span class="text-sm text-white/80 font-bold">
+                                        @(User.Identity.Name?[0].ToString().ToUpper())
+                                    </span>
+                                </div>
+                                <span>Profile</span>
+                            </div>
+                        </a>
+                        <a asp-controller="Song" asp-action="Create" class="btn btn-info bg-[#01FF95] border-none text-uppercase text-gray-800 font-bold">Upload Music</a>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-danger border-none text-uppercase text-gray-800 font-bold">Logout</button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn bg-[#01FF95] border-none text-uppercase text-gray-800 font-bold">Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn bg-[#FF006A] border-none text-uppercase text-white font-bold">Register</a>
+                }
             </div>
         </div>
     </nav>

@@ -6,4 +6,5 @@ public class CreateEditSongDto
     public string Genre { get; set; }
     public int Bpm { get; set; }
     public string FilePath { get; set; }
+    public int UserId { get; set; }
 }

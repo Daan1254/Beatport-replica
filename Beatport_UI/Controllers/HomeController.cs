@@ -19,7 +19,7 @@ public class HomeController : Controller
     {
         try
         {
-            List<SongDto> songDtos = _songService.GetAllSongs();
+            List<SongDto> songDtos = _songService.GetAllSongs(null);
        
             List<SongViewModel> songViewModels = songDtos.Select(dto => new SongViewModel
             {
