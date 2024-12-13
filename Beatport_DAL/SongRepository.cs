@@ -149,4 +149,23 @@ public class SongRepository : ISongRepository
             throw new SongRepositoryException("An error occurred while deleting song.", ex);
         }
     }
+
+    public async Task<int> GetTotalSongsByUser(int userId)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand cmd = new MySqlCommand(
+            "SELECT COUNT(*) FROM songs WHERE user_id = @userId", connection);
+        
+        cmd.Parameters.AddWithValue("@userId", userId);
+        
+        try
+        {
+            await connection.OpenAsync();
+            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        }
+        catch (MySqlException ex)
+        {
+            throw new SongRepositoryException("Error getting total songs count", ex);
+        }
+    }
 }

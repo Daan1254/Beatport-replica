@@ -5,6 +5,7 @@ using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Beatport_UI.Controllers;
 
@@ -21,6 +22,7 @@ public class SongController : Controller
     }
     
     // GET
+    [Authorize]
     public IActionResult Index()
     {
         try
@@ -46,6 +48,7 @@ public class SongController : Controller
     }
     
     
+    [Authorize]
     public IActionResult Create()
     {
         return View();
@@ -98,6 +101,7 @@ public class SongController : Controller
         }
     }
     
+    [Authorize]
     public IActionResult Edit(int Id)
     {
         try
@@ -157,7 +161,8 @@ public class SongController : Controller
             return View();
         }
     }
-    
+
+    [Authorize]
     public IActionResult Delete(int Id)
     {
         try
@@ -203,6 +208,7 @@ public class SongController : Controller
         }
     }
     
+    [Authorize]
     public IActionResult ConnectToPlaylist(int id)
     {
         try

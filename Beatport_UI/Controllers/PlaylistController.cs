@@ -4,9 +4,11 @@ using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Beatport_UI.Controllers;
 
+[Authorize]
 public class PlaylistController : Controller
 {
     private readonly IPlaylistService _playlistService;
@@ -17,6 +19,7 @@ public class PlaylistController : Controller
     }
     
     // GET
+    [Authorize]
     public IActionResult Index()
     {
         List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists();
@@ -31,7 +34,7 @@ public class PlaylistController : Controller
         return View(playlistViewModels);
     }
     
-    
+    [Authorize]
     public IActionResult Details(int id)
     {
         try

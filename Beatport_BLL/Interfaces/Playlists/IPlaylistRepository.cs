@@ -8,4 +8,8 @@ public interface IPlaylistRepository
     public PlaylistWithSongsDto? GetPlaylist(int id);
     public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto);
     public void AddSongToPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto);
+    public bool CreatePlaylist(CreateEditPlaylistDto createEditPlaylistDto);
+    public bool EditPlaylist(int id, CreateEditPlaylistDto createEditPlaylistDto);
+    public bool DeletePlaylist(int id);
+    public Task<int> GetTotalPlaylistsByUser(int userId);
 }
