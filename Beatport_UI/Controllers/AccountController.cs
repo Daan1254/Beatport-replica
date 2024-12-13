@@ -31,7 +31,7 @@ namespace Beatport_UI.Controllers
 
             try
             {
-                var result = await _userService.LoginUser(model);
+                bool result = await _userService.LoginUser(model);
                 if (result)
                 {
                     return RedirectToAction("Index", "Home");
