@@ -1,4 +1,3 @@
-using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using dotenv.net;
@@ -15,10 +14,13 @@ public class PlaylistRepository : IPlaylistRepository
         connectionStr = DotEnv.Read()["DEFAULT_CONNECTION"];
     }
     
-    public List<PlaylistDto> GetAllPlaylists()
+    public List<PlaylistDto> GetAllPlaylists(int? userId)
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
-        using MySqlCommand command = new MySqlCommand("SELECT * FROM Playlists", connection);
+        using MySqlCommand command = new MySqlCommand(
+            "SELECT * FROM Playlists WHERE user_id = @userId AND DeletedAt IS NULL", 
+            connection);
+        command.Parameters.AddWithValue("@userId", userId);
 
         try
         {
@@ -47,7 +49,7 @@ public class PlaylistRepository : IPlaylistRepository
         }
     }
     
-    public PlaylistWithSongsDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id, int? userId)
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand($@"
@@ -66,9 +68,10 @@ public class PlaylistRepository : IPlaylistRepository
             LEFT JOIN 
                 Songs s ON ps.SongId = s.Id
             WHERE 
-                p.Id = @Id;
+                p.Id = @Id AND p.user_id = @userId AND p.DeletedAt IS NULL;
         ", connection);
         command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@userId", userId);
         
         try
         {
@@ -185,6 +188,91 @@ public class PlaylistRepository : IPlaylistRepository
         catch (MySqlException ex)
         {
             throw new PlaylistRepositoryException("An error occurred while checking if Song is in playlist.", ex);
+        }
+    }
+    
+    public async Task<int> GetTotalPlaylistsByUser(int userId)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand cmd = new MySqlCommand(
+            "SELECT COUNT(*) FROM playlists WHERE user_id = @userId", connection);
+        
+        cmd.Parameters.AddWithValue("@userId", userId);
+        
+        try
+        {
+            await connection.OpenAsync();
+            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("Error getting total playlists count", ex);
+        }
+    }
+    
+    public bool CreatePlaylist(CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(@"
+            INSERT INTO Playlists (Title, Description, user_id, CreatedAt)
+            VALUES (@Title, @Description, @UserId, @CreatedAt)", connection);
+
+        command.Parameters.AddWithValue("@Title", createEditPlaylistDto.Title);
+        command.Parameters.AddWithValue("@Description", createEditPlaylistDto.Description);
+        command.Parameters.AddWithValue("@UserId", createEditPlaylistDto.UserId);
+        command.Parameters.AddWithValue("@CreatedAt", DateTime.UtcNow);
+
+        try
+        {
+            connection.Open();
+            return command.ExecuteNonQuery() > 0;
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("Error creating playlist", ex);
+        }
+    }
+    
+    public bool EditPlaylist(int id, CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(@"
+            UPDATE Playlists 
+            SET Title = @Title, Description = @Description 
+            WHERE Id = @Id AND UserId = @UserId", connection);
+
+        command.Parameters.AddWithValue("@Title", createEditPlaylistDto.Title);
+        command.Parameters.AddWithValue("@Description", createEditPlaylistDto.Description);
+        command.Parameters.AddWithValue("@UserId", createEditPlaylistDto.UserId);
+        command.Parameters.AddWithValue("@Id", id);
+
+        try
+        {
+            connection.Open();
+            return command.ExecuteNonQuery() > 0;
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("Error editing playlist", ex);
+        }
+    }
+    
+    public bool DeletePlaylist(int id)
+    {
+        using MySqlConnection connection = new MySqlConnection(connectionStr);
+        using MySqlCommand command = new MySqlCommand(
+            "DELETE FROM Playlists WHERE Id = @Id", connection);
+        
+        command.Parameters.AddWithValue("@Id", id);
+        
+        try
+        {
+            connection.Open();
+            return command.ExecuteNonQuery() > 0;
+        }
+        catch (MySqlException ex)
+        {
+            throw new PlaylistRepositoryException("Error deleting playlist", ex);
         }
     }
 }

@@ -4,9 +4,12 @@ using Beatport_BLL.Models.Dtos;
 using Beatport_UI.Models;
 using Beatport_UI.Models.Playlist;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Beatport_UI.Controllers;
 
+[Authorize]
 public class PlaylistController : Controller
 {
     private readonly IPlaylistService _playlistService;
@@ -17,9 +20,16 @@ public class PlaylistController : Controller
     }
     
     // GET
+    [Authorize]
     public IActionResult Index()
     {
-        List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists();
+        int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists(userId);
         
         List<PlaylistViewModel> playlistViewModels = playlistDtos.Select(dto => new PlaylistViewModel
         {
@@ -31,12 +41,18 @@ public class PlaylistController : Controller
         return View(playlistViewModels);
     }
     
-    
+    [Authorize]
     public IActionResult Details(int id)
     {
         try
         {
-            PlaylistWithSongsDto? playlistDto = _playlistService.GetPlaylist(id);
+            int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            PlaylistWithSongsDto? playlistDto = _playlistService.GetPlaylist(id, userId);
         
             if (playlistDto == null)
             {
@@ -69,6 +85,44 @@ public class PlaylistController : Controller
             return RedirectToAction("Index");
         }
     }
+
+    [Authorize]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Authorize] 
+    public IActionResult Create(PlaylistViewModel playlistViewModel)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(playlistViewModel);
+            }
+
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            CreateEditPlaylistDto createPlaylistDto = new CreateEditPlaylistDto
+            {
+                Title = playlistViewModel.Title,
+                Description = playlistViewModel.Description,
+                UserId = userId
+            };
+
+            _playlistService.CreatePlaylist(createPlaylistDto);
+
+            return RedirectToAction("Index");
+        }
+        catch (PlaylistServiceException ex)
+        {
+            TempData["Error"] = ex.Message;
+            return View(playlistViewModel);
+        }
+    }
+    
     
     [HttpPost]
     public IActionResult DeleteSongFromPlaylist(int songId, int playlistId)

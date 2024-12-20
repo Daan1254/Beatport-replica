@@ -13,22 +13,22 @@ public class PlaylistService : IPlaylistService
         _playlistRepository = playlistRepository;
     }
     
-    public List<PlaylistDto> GetAllPlaylists()
+    public List<PlaylistDto> GetAllPlaylists(int? userId)
     {
         try
         {
-            return _playlistRepository.GetAllPlaylists();
+            return _playlistRepository.GetAllPlaylists(userId);
         } catch (PlaylistRepositoryException ex)
         {
             throw new PlaylistServiceException(ex.Message);
         }
     }
     
-    public PlaylistWithSongsDto? GetPlaylist(int id)
+    public PlaylistWithSongsDto? GetPlaylist(int id, int? userId)
     {
         try
         {
-            PlaylistWithSongsDto? playlistDto =  _playlistRepository.GetPlaylist(id);
+            PlaylistWithSongsDto? playlistDto =  _playlistRepository.GetPlaylist(id, userId);
             
             if (playlistDto == null)
             {
@@ -36,6 +36,39 @@ public class PlaylistService : IPlaylistService
             }
             
             return playlistDto;
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+
+    public void CreatePlaylist(CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.CreatePlaylist(createEditPlaylistDto);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+
+    public void EditPlaylist(int id, CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.EditPlaylist(id, createEditPlaylistDto);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+
+    public void DeletePlaylist(int id)
+    {
+        try
+        {
+            _playlistRepository.DeletePlaylist(id);
         } catch (PlaylistRepositoryException ex)
         {
             throw new PlaylistServiceException(ex.Message);

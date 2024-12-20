@@ -8,7 +8,6 @@ public class PlaylistViewModel
     public int Id { get; set; }
     
     [Required]
-    [MinLength(60)] 
     public string Title { get; set; }
     
     public string? Description { get; set; }

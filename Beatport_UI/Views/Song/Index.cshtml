@@ -1,191 +1,205 @@
 @model IEnumerable<SongViewModel>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Songs";
 }
 
-@if (TempData["Error"] != null)
+@if (!User.Identity?.IsAuthenticated == true)
 {
-    <div class="alert alert-danger">
-        @TempData["Error"]
+    <div class="container mx-auto mt-10 text-center">
+        <h1 class="text-3xl text-white/80 font-bold mb-4">Access Restricted</h1>
+        <p class="text-white/60 mb-6">Please log in to view and manage songs.</p>
+        <div class="flex justify-center gap-4">
+            <a asp-controller="Account" asp-action="Login" class="btn bg-[#FF006A] border-none text-uppercase text-white font-bold">Login</a>
+            <a asp-controller="Account" asp-action="Register" class="btn bg-[#01FF95] border-none text-uppercase text-gray-800 font-bold">Register</a>
+        </div>
     </div>
 }
+else
+{
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
 
-<table class="table table-dark container mx-auto mt-10">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bpm)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                
-            </th>
-            <th class="mr-10">
-                Actions
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bpm)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.FilePath))
-                {
-                    <div class="flex items-center gap-4">
-                        <!-- Backward 10s -->
-                        <button onclick="skipAudio(this, -10)" class="skip-button">
-                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
-                            </svg>
-                        </button>
-                        <button onclick="togglePlay(this, '@item.FilePath')" class="play-button">
-                            <!-- Play Icon -->
-                            <svg class="play-icon w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <!-- Pause Icon (hidden by default) -->
-                            <svg class="pause-icon w-8 h-8 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
-                        <!-- Forward 10s -->
-                        <button onclick="skipAudio(this, 10)" class="skip-button">
-                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
-                            </svg>
-                        </button>
-                        <div class="flex-grow">
-                            <input type="range" class="progress-bar w-full" value="0" min="0" max="100">
+    <table class="table table-dark container mx-auto mt-10">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Bpm)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genre)
+                </th>
+                <th>
+                    
+                </th>
+                <th class="mr-10">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Bpm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.FilePath))
+                    {
+                        <div class="flex items-center gap-4">
+                            <!-- Backward 10s -->
+                            <button onclick="skipAudio(this, -10)" class="skip-button">
+                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
+                                </svg>
+                            </button>
+                            <button onclick="togglePlay(this, '@item.FilePath')" class="play-button">
+                                <!-- Play Icon -->
+                                <svg class="play-icon w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <!-- Pause Icon (hidden by default) -->
+                                <svg class="pause-icon w-8 h-8 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+                            <!-- Forward 10s -->
+                            <button onclick="skipAudio(this, 10)" class="skip-button">
+                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
+                                </svg>
+                            </button>
+                            <div class="flex-grow">
+                                <input type="range" class="progress-bar w-full" value="0" min="0" max="100">
+                            </div>
+                            <audio class="hidden">
+                                <source src="@item.FilePath" type="audio/mpeg">
+                            </audio>
                         </div>
-                        <audio class="hidden">
-                            <source src="@item.FilePath" type="audio/mpeg">
-                        </audio>
-                    </div>
-                }
-            </td>
-            <td>
-                @Html.ActionLink("Add to playlist", "ConnectToPlaylist", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Add to playlist", "ConnectToPlaylist", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn bg-[#01FF95] hover:text-white border-none text-uppercase text-gray-800 font-bold" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger border-none text-uppercase text-gray-800 font-bold" })
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 
-<script>
-let currentlyPlaying = null;
+    <script>
+    let currentlyPlaying = null;
 
-function togglePlay(button, filePath) {
-    const audioElement = button.parentElement.querySelector('audio');
-    const playIcon = button.querySelector('.play-icon');
-    const pauseIcon = button.querySelector('.pause-icon');
-    const progressBar = button.parentElement.querySelector('.progress-bar');
-    
-    // If there's another audio playing, pause it and reset its icons
-    if (currentlyPlaying && currentlyPlaying !== audioElement) {
-        currentlyPlaying.pause();
-        const oldButton = currentlyPlaying.parentElement.querySelector('.play-button');
-        oldButton.querySelector('.play-icon').classList.remove('hidden');
-        oldButton.querySelector('.pause-icon').classList.add('hidden');
-    }
-    
-    if (audioElement.paused) {
-        audioElement.play();
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-        currentlyPlaying = audioElement;
-    } else {
-        audioElement.pause();
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-        currentlyPlaying = null;
-    }
-    
-    // Update progress bar
-    audioElement.ontimeupdate = function() {
-        const percentage = (audioElement.currentTime / audioElement.duration) * 100;
-        progressBar.value = percentage;
-    };
-    
-    // Handle progress bar click
-    progressBar.oninput = function() {
-        const time = (progressBar.value / 100) * audioElement.duration;
-        audioElement.currentTime = time;
-    };
-    
-    // Reset when audio ends
-    audioElement.onended = function() {
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-        progressBar.value = 0;
-        currentlyPlaying = null;
-    };
-}
-
-function skipAudio(button, seconds) {
-    const audioElement = button.parentElement.querySelector('audio');
-    const progressBar = button.parentElement.querySelector('.progress-bar');
-    
-    if (audioElement) {
-        const newTime = Math.min(Math.max(0, audioElement.currentTime + seconds), audioElement.duration);
-        audioElement.currentTime = newTime;
+    function togglePlay(button, filePath) {
+        const audioElement = button.parentElement.querySelector('audio');
+        const playIcon = button.querySelector('.play-icon');
+        const pauseIcon = button.querySelector('.pause-icon');
+        const progressBar = button.parentElement.querySelector('.progress-bar');
+        
+        // If there's another audio playing, pause it and reset its icons
+        if (currentlyPlaying && currentlyPlaying !== audioElement) {
+            currentlyPlaying.pause();
+            const oldButton = currentlyPlaying.parentElement.querySelector('.play-button');
+            oldButton.querySelector('.play-icon').classList.remove('hidden');
+            oldButton.querySelector('.pause-icon').classList.add('hidden');
+        }
+        
+        if (audioElement.paused) {
+            audioElement.play();
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            currentlyPlaying = audioElement;
+        } else {
+            audioElement.pause();
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            currentlyPlaying = null;
+        }
         
         // Update progress bar
-        const percentage = (newTime / audioElement.duration) * 100;
-        progressBar.value = percentage;
+        audioElement.ontimeupdate = function() {
+            const percentage = (audioElement.currentTime / audioElement.duration) * 100;
+            progressBar.value = percentage;
+        };
+        
+        // Handle progress bar click
+        progressBar.oninput = function() {
+            const time = (progressBar.value / 100) * audioElement.duration;
+            audioElement.currentTime = time;
+        };
+        
+        // Reset when audio ends
+        audioElement.onended = function() {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            progressBar.value = 0;
+            currentlyPlaying = null;
+        };
     }
+
+    function skipAudio(button, seconds) {
+        const audioElement = button.parentElement.querySelector('audio');
+        const progressBar = button.parentElement.querySelector('.progress-bar');
+        
+        if (audioElement) {
+            const newTime = Math.min(Math.max(0, audioElement.currentTime + seconds), audioElement.duration);
+            audioElement.currentTime = newTime;
+            
+            // Update progress bar
+            const percentage = (newTime / audioElement.duration) * 100;
+            progressBar.value = percentage;
+        }
+    }
+    </script>
+
+    <style>
+        .progress-bar {
+            height: 4px;
+            background: #1B1C1E;
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #FF006A;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .progress-bar::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            background: #FF006A;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .skip-button {
+            color: #9CA3AF;
+            transition: color 200ms;
+        }
+        
+        .skip-button:hover {
+            color: #FF006A;
+        }
+    </style>
 }
-</script>
-
-<style>
-    .progress-bar {
-        height: 4px;
-        background: #1B1C1E;
-        border-radius: 2px;
-        outline: none;
-        -webkit-appearance: none;
-    }
-
-    .progress-bar::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
-        background: #FF006A;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
-    .progress-bar::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        background: #FF006A;
-        border-radius: 50%;
-        cursor: pointer;
-        border: none;
-    }
-
-    .skip-button {
-        color: #9CA3AF;
-        transition: color 200ms;
-    }
-    
-    .skip-button:hover {
-        color: #FF006A;
-    }
-</style>
