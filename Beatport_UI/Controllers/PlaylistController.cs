@@ -85,6 +85,44 @@ public class PlaylistController : Controller
             return RedirectToAction("Index");
         }
     }
+
+    [Authorize]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Authorize] 
+    public IActionResult Create(PlaylistViewModel playlistViewModel)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(playlistViewModel);
+            }
+
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            CreateEditPlaylistDto createPlaylistDto = new CreateEditPlaylistDto
+            {
+                Title = playlistViewModel.Title,
+                Description = playlistViewModel.Description,
+                UserId = userId
+            };
+
+            _playlistService.CreatePlaylist(createPlaylistDto);
+
+            return RedirectToAction("Index");
+        }
+        catch (PlaylistServiceException ex)
+        {
+            TempData["Error"] = ex.Message;
+            return View(playlistViewModel);
+        }
+    }
+    
     
     [HttpPost]
     public IActionResult DeleteSongFromPlaylist(int songId, int playlistId)

@@ -22,15 +22,16 @@ public class PlaylistTests
    public void GetAllPlaylists_ShouldReturnListOfPlaylists()
    {
        // Arrange
+       int userId = 1;
        List<PlaylistDto> expectedPlaylists = new List<PlaylistDto>
        {
            new() { Id = 1, Title = "Test Playlist 1" },
            new() { Id = 2, Title = "Test Playlist 2" }
        };
-       _mockPlaylistRepository.Setup(x => x.GetAllPlaylists()).Returns(expectedPlaylists);
+       _mockPlaylistRepository.Setup(x => x.GetAllPlaylists(userId)).Returns(expectedPlaylists);
 
        // Act
-       List<PlaylistDto> result = _playlistService.GetAllPlaylists();
+       List<PlaylistDto> result = _playlistService.GetAllPlaylists(userId);
 
        // Assert
        Assert.That(result, Is.EqualTo(expectedPlaylists));
@@ -40,21 +41,24 @@ public class PlaylistTests
    public void GetAllPlaylists_WhenRepositoryThrowsException_ShouldThrowPlaylistServiceException()
    {
        // Arrange
-       _mockPlaylistRepository.Setup(x => x.GetAllPlaylists()).Throws<PlaylistRepositoryException>();
+       int userId = 1;
+       _mockPlaylistRepository.Setup(x => x.GetAllPlaylists(userId)).Throws<PlaylistRepositoryException>();
 
        // Act & Assert
-       Assert.Throws<PlaylistServiceException>(() => _playlistService.GetAllPlaylists());
+       Assert.Throws<PlaylistServiceException>(() => _playlistService.GetAllPlaylists(userId));
    }
 
    [Test]
    public void GetPlaylist_WithValidId_ShouldReturnPlaylist()
    {
        // Arrange
-       PlaylistWithSongsDto expectedPlaylist = new PlaylistWithSongsDto { Id = 1, Title = "Test Playlist" };
-       _mockPlaylistRepository.Setup(x => x.GetPlaylist(1)).Returns(expectedPlaylist);
+       int playlistId = 1;
+       int userId = 1;
+       PlaylistWithSongsDto expectedPlaylist = new PlaylistWithSongsDto { Id = playlistId, Title = "Test Playlist" };
+       _mockPlaylistRepository.Setup(x => x.GetPlaylist(playlistId, userId)).Returns(expectedPlaylist);
 
        // Act
-       PlaylistWithSongsDto result = _playlistService.GetPlaylist(1);
+       PlaylistWithSongsDto result = _playlistService.GetPlaylist(playlistId, userId);
 
        // Assert
        Assert.That(result, Is.EqualTo(expectedPlaylist));
@@ -64,10 +68,12 @@ public class PlaylistTests
    public void GetPlaylist_WithInvalidId_ShouldThrowNotFoundException()
    {
        // Arrange
-       _mockPlaylistRepository.Setup(x => x.GetPlaylist(1)).Returns((PlaylistWithSongsDto)null);
+       int playlistId = 1;
+       int userId = 1;
+       _mockPlaylistRepository.Setup(x => x.GetPlaylist(playlistId, userId)).Returns((PlaylistWithSongsDto)null);
 
        // Act & Assert
-       Assert.Throws<NotFoundException>(() => _playlistService.GetPlaylist(1));
+       Assert.Throws<NotFoundException>(() => _playlistService.GetPlaylist(playlistId, userId));
    }
 
    [Test]

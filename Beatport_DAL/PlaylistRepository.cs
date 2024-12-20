@@ -1,4 +1,3 @@
-using Beatport_BLL.Exceptions;
 using Beatport_BLL.Interfaces;
 using Beatport_BLL.Models.Dtos;
 using dotenv.net;
@@ -215,7 +214,7 @@ public class PlaylistRepository : IPlaylistRepository
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(@"
-            INSERT INTO Playlists (Title, Description, UserId, CreatedAt)
+            INSERT INTO Playlists (Title, Description, user_id, CreatedAt)
             VALUES (@Title, @Description, @UserId, @CreatedAt)", connection);
 
         command.Parameters.AddWithValue("@Title", createEditPlaylistDto.Title);

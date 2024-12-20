@@ -59,6 +59,7 @@ public class UserService : IUserService
         try
         {
             UserDto? user = await _userRepository.GetUserByEmail(loginUserDto.Email);
+            
             if (user == null)
             {
                 throw new UserServiceException("Invalid email or password");
@@ -83,7 +84,6 @@ public class UserService : IUserService
                 IsPersistent = true, // This will create a persistent cookie
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7) // Cookie expires in 7 days
             };
-
             // Sign in
             await _httpContextAccessor.HttpContext!.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,

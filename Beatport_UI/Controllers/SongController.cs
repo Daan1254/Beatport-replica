@@ -63,7 +63,7 @@ public class SongController : Controller
     
     [HttpPost] 
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Create(SongViewModel songViewModel)
+    public async Task<ActionResult> Create(CreateSongViewModel songViewModel)
     {
         if (!ModelState.IsValid)
         {
@@ -240,9 +240,13 @@ public class SongController : Controller
     {
         try
         {
-            int? userId = User.Identity?.IsAuthenticated == true 
-                ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
-                : null;
+            int? userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
+            
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
             SongDto songDto = _songService.GetSong(id, userId);
             List<PlaylistDto> playlistDtos = _playlistService.GetAllPlaylists(userId);
             
@@ -258,6 +262,7 @@ public class SongController : Controller
                 Title = songDto.Title,
                 Genre = songDto.Genre,
                 Bpm = songDto.Bpm,
+                
                 Playlists = playlistViewModels,
             };
             

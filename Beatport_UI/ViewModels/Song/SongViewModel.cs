@@ -17,8 +17,5 @@ public class SongViewModel
     [Range(1, 999)]
     public int Bpm { get; set; }
     
-    [Required(ErrorMessage = "Please select a song file")]
-    public IFormFile SongFile { get; set; }
-    
     public string? FilePath { get; set; }
 }

@@ -41,6 +41,39 @@ public class PlaylistService : IPlaylistService
             throw new PlaylistServiceException(ex.Message);
         }
     }
+
+    public void CreatePlaylist(CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.CreatePlaylist(createEditPlaylistDto);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+
+    public void EditPlaylist(int id, CreateEditPlaylistDto createEditPlaylistDto)
+    {
+        try
+        {
+            _playlistRepository.EditPlaylist(id, createEditPlaylistDto);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
+
+    public void DeletePlaylist(int id)
+    {
+        try
+        {
+            _playlistRepository.DeletePlaylist(id);
+        } catch (PlaylistRepositoryException ex)
+        {
+            throw new PlaylistServiceException(ex.Message);
+        }
+    }
     
     public void DeleteSongFromPlaylist(AddRemoveSongFromPlaylistDto addRemoveSongFromPlaylistDto)
     {
