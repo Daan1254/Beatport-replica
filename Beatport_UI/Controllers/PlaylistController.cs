@@ -70,6 +70,7 @@ public class PlaylistController : Controller
                     Title = songDto.Title,
                     Genre = songDto.Genre,
                     Bpm = songDto.Bpm,
+                    FilePath = songDto.FilePath,
                 }).ToList() 
             };
         

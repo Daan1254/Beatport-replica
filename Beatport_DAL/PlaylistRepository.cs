@@ -18,7 +18,7 @@ public class PlaylistRepository : IPlaylistRepository
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(
-            "SELECT * FROM Playlists WHERE user_id = @userId AND DeletedAt IS NULL", 
+            "SELECT * FROM playlists WHERE user_id = @userId AND DeletedAt IS NULL", 
             connection);
         command.Parameters.AddWithValue("@userId", userId);
 
@@ -59,14 +59,15 @@ public class PlaylistRepository : IPlaylistRepository
                 p.Description AS PlaylistDescription,
                 s.Id AS SongId,
                 s.Title AS SongTitle,
+                s.file_path AS SongFilePath,
                 s.Bpm AS SongBpm,
                 s.Genre AS SongGenre
             FROM 
-                Playlists p
+                playlists p
             LEFT JOIN 
                 Song_Playlist ps ON p.Id = ps.PlaylistId
             LEFT JOIN 
-                Songs s ON ps.SongId = s.Id
+                songs s ON ps.SongId = s.Id
             WHERE 
                 p.Id = @Id AND p.user_id = @userId AND p.DeletedAt IS NULL;
         ", connection);
@@ -103,6 +104,7 @@ public class PlaylistRepository : IPlaylistRepository
                         Title = reader.GetString("SongTitle"),
                         Bpm = reader.GetInt32("SongBpm"),
                         Genre = reader.GetString("SongGenre"),
+                        FilePath = reader.GetString("SongFilePath"),
                     });
                 }
             }
@@ -214,7 +216,7 @@ public class PlaylistRepository : IPlaylistRepository
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(@"
-            INSERT INTO Playlists (Title, Description, user_id, CreatedAt)
+            INSERT INTO playlists (Title, Description, user_id, CreatedAt)
             VALUES (@Title, @Description, @UserId, @CreatedAt)", connection);
 
         command.Parameters.AddWithValue("@Title", createEditPlaylistDto.Title);
@@ -237,7 +239,7 @@ public class PlaylistRepository : IPlaylistRepository
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(@"
-            UPDATE Playlists 
+            UPDATE playlists 
             SET Title = @Title, Description = @Description 
             WHERE Id = @Id AND UserId = @UserId", connection);
 
@@ -261,7 +263,7 @@ public class PlaylistRepository : IPlaylistRepository
     {
         using MySqlConnection connection = new MySqlConnection(connectionStr);
         using MySqlCommand command = new MySqlCommand(
-            "DELETE FROM Playlists WHERE Id = @Id", connection);
+            "DELETE FROM playlists WHERE Id = @Id", connection);
         
         command.Parameters.AddWithValue("@Id", id);
         

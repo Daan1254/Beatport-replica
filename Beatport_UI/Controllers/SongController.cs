@@ -165,7 +165,7 @@ public class SongController : Controller
             Bpm = songViewModel.Bpm
         };
         
-        try
+        try 
         {
             int? userId = User.Identity?.IsAuthenticated == true 
                 ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
